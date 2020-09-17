@@ -1,4 +1,6 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 
 import TimeIntervalSelect from './components/TimeIntervalSelect';
 import  DayPersonalSchedule from './components/DayPersonalSchedule';
@@ -20,7 +22,7 @@ export default function App() {
   };    
     
   return (
-    <div className="App">
+    <div>
         {/* <DayPersonalSchedule /> */}
         <CommonSchedule />
         
