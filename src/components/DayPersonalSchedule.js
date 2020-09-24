@@ -4,32 +4,40 @@ export default class DayPersonalSchedule extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            schedule: {
-                50: {duration:30, type:'own', text:'aaaaaaaa'},
-                115: {duration:15, type:'pause', text:'bbbbbbbbb'},
-                0: {duration:40, type:'extenal', text:'ssssssss'},
-                130: {duration:25, type:'own', text:'hdfsh dfhsrhb  hrthrth rehrt'},
-            },
-            BeginShiftMinutes : 23 * 60,
-        };  
+        };
     };
-    
-    formatSchedule(schedule, begin, end) {
+
+    static defaultProps = {
+        title: 'React',
+        DaySchedule: {
+            schedule: {
+                50: {duration:30, s_type:'own', text:'aaaaaaaa'},
+                115: {duration:15, s_type:'pause', text:'bbbbbbbbb'},
+                0: {duration:40, s_type:'extenal', text:'ssssssss'},
+                130: {duration:25, s_type:'own', text:'hdfsh dfhsrhb  hrthrth rehrt'},
+            },
+            BeginShiftMinutes : 21 * 60,
+            DurationShiftMinutes : 300,
+        },
+    }
+
+    formatSchedule(schedule, duration) {
         let ret = [];
+        let begin = 0;
         for (let k in schedule) {
             //console.log(begin);
             if (begin < k) {
-                ret.push( {duration: k - begin, begin:begin, type:'free'} );
+                ret.push( {duration: k - begin, begin:begin, s_type:'free'} );
             }
             ret.push(Object.assign(schedule[k], {begin: parseInt(k)}));
-            begin = parseInt(k) + schedule[k].duration;
+            begin = Number(k) + Number(schedule[k].duration);
         }
-        if (begin < end) {
-            ret.push({duration: end - begin, begin:begin, type:'free'});
+        if (begin < duration) {
+            ret.push({duration: duration - begin, begin:begin, s_type:'free'});
         }
         return ret;
     };
-    
+
     getTimeFromMins(mins) {
         let hours = Math.trunc(mins/60);
         if (hours>23)
@@ -38,43 +46,56 @@ export default class DayPersonalSchedule extends Component {
             hours = '0' + hours;
         let minutes = mins % 60;
         if (minutes<10)
-            minutes = '0' + minutes;        
+            minutes = '0' + minutes;
         return hours + ':' + minutes;
-    };    
+    };
 
     delScheduleService (idBegin) {
         delete(this.state.schedule[idBegin]);
-        this.setState({ schedule: this.state.schedule });        
-    }    
-    
+        this.setState({ schedule: this.state.schedule });
+    }
+
+    onIntervalClick(intBegin, intDuration, intType) {
+        console.log(intBegin, intDuration, intType);
+    }
+
     render() {
-        let sch1 = this.formatSchedule(this.state.schedule, 0, 240);
-        console.log(sch1);
-        
+        const schedule = this.props.DaySchedule.schedule
+        const DurationShiftMinutes = Number(this.props.DaySchedule.DurationShiftMinutes)
+        const BeginShiftMinutes = Number(this.props.DaySchedule.BeginShiftMinutes)
+
+        let sch1 = this.formatSchedule(schedule, DurationShiftMinutes)
+        //console.log(this.props.DaySchedule);
+
         return (
             <div>
-            {sch1.map((d, index) => (
-                <div key={index} style={{border:'solid 1px'}}>
-                    <div>
-                        <span className="DaySchedule-timePoint">
-                            {this.getTimeFromMins(this.state.BeginShiftMinutes + d.begin)}
-                        </span>
-                        {d.duration}min {d.type} {d.text}
-                        { d.type !== 'free' &&
-                            <button onClick={this.delScheduleService.bind(this, d.begin)}> (X) {d.begin}</button>                            
+                <h2>{this.props.title}</h2>
+                {sch1.map((d, index) => (
+                    <div key={index} className="DaySchedule-interval" onClick={this.onIntervalClick.bind(this, d.begin, d.duration, d.s_type)}>
+                        <div>
+                            <span className="DaySchedule-timePoint">
+                                {this.getTimeFromMins(BeginShiftMinutes + Number(d.begin))}
+                            </span>
+                            {d.duration}min {d.s_type} {d.text}
+                            { d.s_type !== 'free' &&
+                                <button onClick={this.delScheduleService.bind(this, d.begin)}> (X) {d.begin}</button>
+                            }
+                        </div>
+                        {Array(d.duration - 1).fill(null).map((d2, ind2) => (
+                            <div key={ind2} style={{height:'3px'}}>
+                                { (BeginShiftMinutes + d.begin + ind2 + 1) % 15 === 0 &&
+                                    <span className="DaySchedule-timePoint"> {this.getTimeFromMins(BeginShiftMinutes + d.begin + ind2 + 1)} </span>
+                                }
+                                &nbsp;
+                            </div>
+                        ))}
+                        { index+1 == sch1.length &&
+                            <span className="DaySchedule-timePoint">
+                                {this.getTimeFromMins(BeginShiftMinutes + DurationShiftMinutes)}
+                            </span>
                         }
                     </div>
-                    {Array(d.duration - 1).fill(null).map((d2, ind2) => (
-                        //console.log(d1);
-                        <div key={ind2} style={{height:'3px'}}>
-                            { (this.state.BeginShiftMinutes + d.begin + ind2 + 1) % 15 === 0 &&
-                                <span className="DaySchedule-timePoint"> {this.getTimeFromMins(this.state.BeginShiftMinutes + d.begin + ind2 + 1)} </span> 
-                            }
-                            &nbsp;
-                        </div>                     
-                    ))}
-                </div>
-            ))}
+                ))}
             </div>
         );
     }

@@ -34,10 +34,17 @@
   }
 }
 
+.CommonSchedule-ShiftActive {
+    color: red;
+}
 
+.DaySchedule-interval {
+    border: solid 1px;
+    margin: 1px 77px;
+}
 
 .DaySchedule-timePoint {
-    margin-left:-55px;
+    margin-left: -55px;
     margin-right: 55px;
 }
 

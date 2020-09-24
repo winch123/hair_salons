@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import {api} from "../utils.js";
+import { connect } from 'react-redux';
 
-export default class CommonSchedule extends Component {
+import  DayPersonalSchedule from './DayPersonalSchedule';
+
+class CommonSchedule extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,35 +18,45 @@ export default class CommonSchedule extends Component {
                 {id:2, name:'Петрова',},
                 {id:3, name:'Сидорова',},
             ],
+            currentShiftId: null,
         };
     };
 
-    setCurrentMasterAndDay (masterId, dayId) {
-        console.log(masterId, dayId);
-    }
-    
-    componentDidMount() {  
-        console.log('componentDidMount');
-        api.get('/site/test1')
+    componentDidMount() {
+        //if (true) return;
+
+        api.get('/salon/actual-workshifts-get')
         .then(res => {
             console.log(res.data);
-            this.setState({ 
+            this.setState({
                 persons: res.data.persons,
-                workshifts: res.data.workshifts,                
+                workshifts: res.data.workshifts,
             });
         })
     }
-    
+
+    onSelectWorkshift(shiftId, masterId, dayId) {
+        //console.info(shiftId, masterId, dayId);
+        api.get('/salon/schedule-get?shiftId=' + shiftId)
+        .then(res => {
+            //console.log(res.data);
+            this.props.setSchedule(shiftId, res.data);
+        })
+        this.setState({
+            currentShiftId: shiftId,
+        });
+    }
+
     render() {
-        
+        let {workshifts} = this.state
         return (
             <div>
                 <table>
                     <thead>
                         <tr>
                             <th></th>
-                            {Object.keys(this.state.workshifts).map((k1) => (
-                                <th key={k1}>{this.state.workshifts[k1].caption}</th>
+                            {Object.keys(workshifts).map((k1) => (
+                                <th key={k1}>{workshifts[k1].caption}</th>
                             )) }
                         </tr>
                     </thead>
@@ -51,22 +64,53 @@ export default class CommonSchedule extends Component {
                         {this.state.persons.map((master) => (
                             <tr key={master.id}>
                                 <td>{master.name}</td>
-                                {Object.keys(this.state.workshifts).map((k2) => (
+                                {Object.keys(workshifts).map((k2) => (
                                     <td key={k2}>
-                                        { this.state.workshifts[k2].masters[master.id] &&
-                                            <button onClick={this.setCurrentMasterAndDay.bind(this, master.id, k2)}>
-                                                {this.state.workshifts[k2].masters[master.id]}
+                                        { workshifts[k2].masters[master.id] &&
+                                            <button
+                                                onClick = {() => this.onSelectWorkshift(workshifts[k2].masters[master.id].shift_id, master.id, k2)}
+                                                className = {this.state.currentShiftId === workshifts[k2].masters[master.id].shift_id  ? 'CommonSchedule-ShiftActive' : ''}
+                                            >
+                                                {workshifts[k2].masters[master.id].text}
                                             </button>
                                         }
                                     </td>
-                                )) }                                
-                            </tr>                                                        
+                                )) }
+                            </tr>
                         ))}
                     </tbody>
                 </table>
-                
-                
+                <div>
+                    текущая смена: {this.state.currentShiftId}
+                </div>
+
+                <hr/>
+                {
+                    //console.log( this.props.schedule[this.state.currentShiftId] )
+                }
+                {
+                    this.props.schedule[this.state.currentShiftId] &&
+                        <DayPersonalSchedule title="рассписание"  DaySchedule={this.props.schedule[this.state.currentShiftId]} />
+                    ||
+                      <p>загрузка....</p>
+                }
            </div>
         );
     }
 }
+
+export default  connect(
+    (storeState) => {
+        //console.log(storeState.schedule)
+        return {
+            schedule: storeState.schedule,
+        }
+    },
+    (dispatch) => {
+        return {
+            setSchedule: (id, value) => {
+                dispatch({ type: 'SET_SCHEDULE', id: id, value: value, });
+            }
+        }
+    }
+)(CommonSchedule) ;

@@ -1,14 +1,18 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import mainReduser from './reducers';
 
 import TimeIntervalSelect from './components/TimeIntervalSelect';
-import  DayPersonalSchedule from './components/DayPersonalSchedule';
 import  CommonSchedule from './components/CommonSchedule';
 import './App.css';
 
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
+
+const store = createStore(mainReduser, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+//const unsubscribe = store.subscribe(() => console.info( {...store.getState()} ));
+
 
 export default function App() {
   const [open, setOpen] = React.useState(false);
@@ -22,8 +26,7 @@ export default function App() {
   };    
     
   return (
-    <div>
-        {/* <DayPersonalSchedule /> */}
+    <Provider store={store}>
         <CommonSchedule />
         
         <header className="App-header">
@@ -36,6 +39,6 @@ export default function App() {
             <TimeIntervalSelect />
         </Dialog>      
       
-    </div>
+    </Provider>
   );
 }
