@@ -34,6 +34,8 @@
   }
 }
 
+/**********************************************************/
+
 .CommonSchedule-ShiftActive {
     color: red;
 }
@@ -49,3 +51,23 @@
 }
 
 
+#time-contaner {
+    display: flex;
+    justify-content:space-around;
+    width: 88vw;
+    margin: 33px 0;
+}
+.time-point {
+  padding:3px;
+  border:solid white 1px;
+}
+.time-point:hover {
+  border-color: red;
+}
+.act {
+  background: green;
+  color:yellow;
+}
+.lastAct {
+  background: lightBlue;
+}

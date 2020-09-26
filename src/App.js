@@ -23,22 +23,22 @@ export default function App() {
 
   const handleClose = () => {
     setOpen(false);
-  };    
-    
+  };
+
   return (
     <Provider store={store}>
         <CommonSchedule />
-        
+
         <header className="App-header">
             <Button variant="contained" color="primary" onClick={handleClickOpen}> Hello World </Button>
         </header>
-        <Dialog
+        <Dialog  maxWidth='xl'
             open={open}
             onClose={handleClose}
-        > 
+        >
             <TimeIntervalSelect />
-        </Dialog>      
-      
+        </Dialog>
+
     </Provider>
   );
 }

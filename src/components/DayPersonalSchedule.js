@@ -89,7 +89,7 @@ export default class DayPersonalSchedule extends Component {
                                 &nbsp;
                             </div>
                         ))}
-                        { index+1 == sch1.length &&
+                        { index+1 === sch1.length &&
                             <span className="DaySchedule-timePoint">
                                 {this.getTimeFromMins(BeginShiftMinutes + DurationShiftMinutes)}
                             </span>
