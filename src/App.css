@@ -64,9 +64,12 @@
 .time-point:hover {
   border-color: red;
 }
+.actFix {
+  background: lightgreen;
+}
 .act {
-  background: green;
-  color:yellow;
+  color:red;
+  font-weight:bold;
 }
 .lastAct {
   background: lightBlue;

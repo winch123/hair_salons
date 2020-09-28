@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import mainReduser from './reducers';
 
-import TimeIntervalSelect from './components/TimeIntervalSelect';
+import AddServiceDialog from './components/AddServiceDialog';
 import  CommonSchedule from './components/CommonSchedule';
 import './App.css';
 
@@ -36,7 +36,11 @@ export default function App() {
             open={open}
             onClose={handleClose}
         >
-            <TimeIntervalSelect />
+            <AddServiceDialog
+                onClose={handleClose}
+                beginTime = '16:40'
+                endTime = '19:40'
+            />
         </Dialog>
 
     </Provider>
