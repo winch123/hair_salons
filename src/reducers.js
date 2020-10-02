@@ -1,10 +1,13 @@
 //import { combineReducers } from 'redux'
 
 function setSchedule(state = {}, act) {
-    if (act.type === 'SET_SCHEDULE') {
-        let newState = Object.assign({}, state);
-        act.value.updated = new Date();
-        newState[act.id] = act.value;
+    let newState = Object.assign({}, state);
+    if (act.type === 'UPDATE_SCHEDULE_SHIFTS') {
+        for (let key in act.value) {
+            //console.log(key, act.value[key])
+            act.value[key].updated = new Date()
+            newState[key] = act.value[key]
+        }
         return newState;
     }
     return state;

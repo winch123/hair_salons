@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {api} from "../utils.js";
+import {api, apiRequest} from "../utils.js";
 import { connect } from 'react-redux';
 
 import  DayPersonalSchedule from './DayPersonalSchedule';
@@ -37,11 +37,8 @@ class CommonSchedule extends Component {
 
     onSelectWorkshift(shiftId, masterId, dayId) {
         //console.info(shiftId, masterId, dayId);
-        api.get('/salon/schedule-get?shiftId=' + shiftId)
-        .then(res => {
-            //console.log(res.data);
-            this.props.setSchedule(shiftId, res.data);
-        })
+        apiRequest('/salon/schedule-get', {shiftId})
+
         this.setState({
             currentShiftId: shiftId,
         });
@@ -90,7 +87,11 @@ class CommonSchedule extends Component {
                 }
                 {
                     this.props.schedule[this.state.currentShiftId] &&
-                        <DayPersonalSchedule title="рассписание"  DaySchedule={this.props.schedule[this.state.currentShiftId]} />
+                        <DayPersonalSchedule
+                            title = "рассписание"
+                            DaySchedule = {this.props.schedule[this.state.currentShiftId]}
+                            currentShiftId = {this.state.currentShiftId}
+                        />
                     ||
                       <p>загрузка....</p>
                 }

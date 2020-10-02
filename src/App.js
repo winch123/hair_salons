@@ -1,7 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import mainReduser from './reducers';
+
 
 import AddServiceDialog from './components/AddServiceDialog';
 import  CommonSchedule from './components/CommonSchedule';
@@ -10,8 +9,7 @@ import './App.css';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 
-const store = createStore(mainReduser, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-//const unsubscribe = store.subscribe(() => console.info( {...store.getState()} ));
+import {store} from './utils'
 
 
 export default function App() {
