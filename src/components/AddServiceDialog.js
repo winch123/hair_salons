@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import TimeIntervalSelect from './TimeIntervalSelect';
-import {api} from "../utils.js";
+import {apiRequest} from "../utils.js";
 
 export default class AddServiceDialog extends Component {
     constructor(props) {
@@ -11,6 +11,7 @@ export default class AddServiceDialog extends Component {
             currInterval:40,
             listOfIntervals: [10,15,20,30,40,50,60,70,80,90,100,110,120,150,180],
             fromTime:null, toTime:null, // интервал выбранного времени
+            textComment: '',
         }
     }
 
@@ -25,13 +26,20 @@ export default class AddServiceDialog extends Component {
         })
     }
 
+    handleChange = (event) => {
+        this.setState({textComment: event.target.value})
+    }
+
     render() {
 
         const saveServiceInShedule = () => {
-            api.post('/salon/....')
-            .then(res => {
-                console.log(res.data);
 
+            apiRequest('/salon/schedule-add-service', {
+                shiftId: this.props.currentShiftId,
+                masterServiceId: 4, /// стрижка какая-то
+                beginTime: this.state.fromTime,
+                endTime: this.state.toTime,
+                comment: this.state.textComment,
             })
 
             this.props.onClose()
@@ -47,7 +55,12 @@ export default class AddServiceDialog extends Component {
 
                 <div style={{width:'80vw', margin:'22px', display:'block', overflow:'hidden' }}>
                     <div style={{textAlign:'right'}}>Комментарий</div>
-                    <TextField  label="Например имя клиента или любая другая пояснительная информация." style={{width:'100%'}} variant="outlined" />
+                    <TextField
+                        label="Например имя клиента или любая другая пояснительная информация."
+                        style={{width:'100%'}}
+                        variant="outlined"
+                        onChange={this.handleChange}
+                    />
                 </div>
                 <div>
                     {this.state.fromTime} --- {this.state.toTime}
@@ -60,9 +73,10 @@ export default class AddServiceDialog extends Component {
                     endTime = {this.props.endTime}
                 />
 
-                <Button autoFocus onClick={this.props.onClose} color="primary" variant="contained">
+                <Button autoFocus onClick={saveServiceInShedule} color="primary" variant="contained">
                     Save
                 </Button>
+
 
             </div>
         );

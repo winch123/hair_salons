@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 
+import AddServiceDialog from './AddServiceDialog'
+import Dialog from '@material-ui/core/Dialog'
+
 export default class DayPersonalSchedule extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            IntervalSelector_open: false,
+            IntervalSelector_beginTime: null,
+            IntervalSelector_endTime: null,
         };
     };
 
     static defaultProps = {
-        title: 'React',
         DaySchedule: {
             schedule: {
                 50: {duration:30, s_type:'own', text:'aaaaaaaa'},
@@ -29,7 +34,7 @@ export default class DayPersonalSchedule extends Component {
             if (begin < k) {
                 ret.push( {duration: k - begin, begin:begin, s_type:'free'} );
             }
-            ret.push(Object.assign(schedule[k], {begin: parseInt(k)}));
+            ret.push(Object.assign(schedule[k], {begin: Number(k)}));
             begin = Number(k) + Number(schedule[k].duration);
         }
         if (begin < duration) {
@@ -55,8 +60,21 @@ export default class DayPersonalSchedule extends Component {
         this.setState({ schedule: this.state.schedule });
     }
 
-    onIntervalClick(intBegin, intDuration, intType) {
-        console.log(intBegin, intDuration, intType);
+    onIntervalClick(intBegin, intDuration, intervalType) {
+        let beginT = this.getTimeFromMins( Number(this.props.DaySchedule.BeginShiftMinutes) + Number(intBegin) )
+        let endT = this.getTimeFromMins( Number(this.props.DaySchedule.BeginShiftMinutes) + Number(intBegin) + Number(intDuration) )
+        console.log(beginT, endT, intervalType)
+        if (intervalType === 'free') {
+            this.setState({
+                IntervalSelector_open: true,
+                IntervalSelector_beginTime: beginT,
+                IntervalSelector_endTime: endT,
+            })
+        }
+    }
+
+    IntervalSelector_handleClose = () => {
+        this.setState({IntervalSelector_open: false})
     }
 
     render() {
@@ -74,7 +92,7 @@ export default class DayPersonalSchedule extends Component {
                     <div key={index} className="DaySchedule-interval" onClick={this.onIntervalClick.bind(this, d.begin, d.duration, d.s_type)}>
                         <div>
                             <span className="DaySchedule-timePoint">
-                                {this.getTimeFromMins(BeginShiftMinutes + Number(d.begin))}
+                                {this.getTimeFromMins(BeginShiftMinutes + d.begin)}
                             </span>
                             {d.duration}min {d.s_type} {d.text}
                             { d.s_type !== 'free' &&
@@ -96,6 +114,18 @@ export default class DayPersonalSchedule extends Component {
                         }
                     </div>
                 ))}
+
+                <Dialog  maxWidth='xl'
+                    open={this.state.IntervalSelector_open}
+                    onClose={this.IntervalSelector_handleClose}
+                >
+                    <AddServiceDialog
+                        onClose={this.IntervalSelector_handleClose}
+                        beginTime = {this.state.IntervalSelector_beginTime}
+                        endTime = {this.state.IntervalSelector_endTime}
+                        currentShiftId = {this.props.currentShiftId}
+                    />
+                </Dialog>
             </div>
         );
     }
