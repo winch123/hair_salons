@@ -1,45 +1,32 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-
+import { Router, Route, Switch, Redirect } from "react-router-dom"
+import {createBrowserHistory} from 'history'
 
 import AddServiceDialog from './components/AddServiceDialog';
-import  CommonSchedule from './components/CommonSchedule';
+import CommonSchedule from './components/CommonSchedule';
+import SalonSettings from './components/SalonSettings';
 import './App.css';
-
-import Dialog from '@material-ui/core/Dialog';
-import Button from '@material-ui/core/Button';
 
 import {store} from './utils'
 
-
 export default function App() {
-  const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const history = createBrowserHistory()
 
   return (
     <Provider store={store}>
-        <CommonSchedule />
-
         <header className="App-header">
-            <Button variant="contained" color="primary" onClick={handleClickOpen}> Hello World </Button>
+            <h2>H. S.</h2>
         </header>
-        <Dialog  maxWidth='xl'
-            open={open}
-            onClose={handleClose}
-        >
-            <AddServiceDialog
-                onClose={handleClose}
-                beginTime = '16:40'
-                endTime = '19:40'
-            />
-        </Dialog>
+
+        <Router history={history}>
+            <Switch>
+                <Route path='/schedule' component={CommonSchedule} />
+                <Route path='/settings' component={SalonSettings} />
+                <Redirect from='/' to='/schedule'/>
+            </Switch>
+        </Router>
 
     </Provider>
   );
