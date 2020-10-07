@@ -6,6 +6,7 @@ import {createBrowserHistory} from 'history'
 import AddServiceDialog from './components/AddServiceDialog';
 import CommonSchedule from './components/CommonSchedule';
 import SalonSettings from './components/SalonSettings';
+import test from './components/test';
 import './App.css';
 
 import {store} from './utils'
@@ -24,6 +25,7 @@ export default function App() {
             <Switch>
                 <Route path='/schedule' component={CommonSchedule} />
                 <Route path='/settings' component={SalonSettings} />
+                <Route path='/test' component={test} />
                 <Redirect from='/' to='/schedule'/>
             </Switch>
         </Router>
