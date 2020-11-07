@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { Router, Route, Switch, Redirect } from "react-router-dom"
 import {createBrowserHistory} from 'history'
 
-import AddServiceDialog from './components/AddServiceDialog';
+//import AddServiceDialog from './components/AddServiceDialog';
 import CommonSchedule from './components/CommonSchedule';
 import SalonSettings from './components/SalonSettings';
 import test from './components/test';
