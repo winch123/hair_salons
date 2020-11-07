@@ -34,7 +34,7 @@ export default class AddServiceDialog extends Component {
 
         const saveServiceInShedule = () => {
 
-            apiRequest('/salon/schedule-add-service', {
+            apiRequest('schedule-add-service', {
                 shiftId: this.props.currentShiftId,
                 masterServiceId: 4, /// стрижка какая-то
                 beginTime: this.state.fromTime,

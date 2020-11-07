@@ -21,13 +21,13 @@ class SalonSettings extends Component {
     }
 
     componentDidMount() {
-        apiRequest('/salon/get-salon-services-list', {salonId:1})
+        apiRequest('get-salon-services-list', {salonId:1})
         .then(res => {
             //console.log(res)
-            //this.setState({SalonServicesList: res})
+            this.setState({SalonServicesList: res})
         })
 
-        apiRequest('/salon/get-all-services-dir')
+        apiRequest('get-all-services-dir')
         .then(res => {
             //console.log(res)
             this.setState({AllServices: res})
@@ -55,7 +55,7 @@ class SalonSettings extends Component {
 
     setExpanded(exp) {
         //console.log(exp)
-        this.setState({expanded: (this.state.expanded==exp ? null : exp)})
+        this.setState({expanded: (this.state.expanded===exp ? null : exp)})
     }
 
     render() {
@@ -94,7 +94,7 @@ class SalonSettings extends Component {
                 <ul>
                 {Object.entries(SalonServicesList).map(([catId, cat]) => (
 
-                    <Accordion key={catId} expanded={this.state.expanded == catId} onChange={ () => this.setExpanded(catId)}>
+                    <Accordion key={catId} expanded={this.state.expanded === catId} onChange={ () => this.setExpanded(catId)}>
                         <AccordionSummary  style={{background:'#eee'}} expandIcon={<ExpandMore />}>
                             <p>{cat.name}</p>
                         </AccordionSummary>

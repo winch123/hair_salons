@@ -25,7 +25,7 @@ class CommonSchedule extends Component {
     componentDidMount() {
         //if (true) return;
 
-        api.get('/salon/actual-workshifts-get')
+        api.get('actual-workshifts-get')
         .then(res => {
             console.log(res.data);
             this.setState({
@@ -37,7 +37,7 @@ class CommonSchedule extends Component {
 
     onSelectWorkshift(shiftId, masterId, dayId) {
         //console.info(shiftId, masterId, dayId);
-        apiRequest('/salon/schedule-get', {shiftId})
+        apiRequest('schedule-get', {shiftId})
 
         this.setState({
             currentShiftId: shiftId,

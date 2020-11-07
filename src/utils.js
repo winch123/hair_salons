@@ -3,7 +3,8 @@ import { createStore } from 'redux'
 import mainReduser from './reducers'
 
 let api = axios.create({
-  baseURL: "http:///hair-salons.local/",
+  // baseURL: "http://hair-salons.local/salon/",
+  baseURL: "http://hair-salons.local/api/",
   responseType: "json"
 });
 
