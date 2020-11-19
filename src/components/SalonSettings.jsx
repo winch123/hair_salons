@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { SaveTwoTone, RemoveCircleTwoTone, GroupAddTwoTone, ExpandMore } from '@material-ui/icons'
 import TextField from '@material-ui/core/TextField';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -16,6 +18,14 @@ class SalonSettings extends Component {
             SalonServicesList: {},
             options: [{text:'aaaaaaa'}, {text:'bbbbb'}],
             AllServices: {},
+            AllCategories: {},
+            CurrentForSave: {
+              catId: 0,
+              serviceId: null,
+              serviceName: null,
+            },
+            CurrentCatSelectDisabled: true,
+            CurrentCatSelectOpen: false,
             expanded: 1,
         }
     }
@@ -30,12 +40,38 @@ class SalonSettings extends Component {
         apiRequest('get-all-services-dir')
         .then(res => {
             //console.log(res)
-            this.setState({AllServices: res})
+            this.setState({
+              AllServices: res.servs,
+              AllCategories: res.cats,
+            })
         })
     }
 
     EditButtonClick(serviceId) {
         console.log(serviceId)
+    }
+
+    setStateA = (path, value) => {
+      let rootName = path.shift()
+      let someProperty = {...this.state[rootName]}
+      //console.log(rootName)
+      //console.log(path)
+      //console.log(value)
+      //console.log(someProperty)
+
+      let cur = someProperty
+      for (let ind of path ) {
+          if(typeof cur[ind] === 'undefined') {
+              throw new Error(ind + " not found");
+          }
+          if (path[path.length - 1] === ind)
+              cur[ind] = value
+          else
+              cur = cur[ind]
+      }
+      //someProperty['catId'] = value
+
+      this.setState({[rootName]: someProperty})
     }
 
     DurationChange = (event, serviceId, type='duration_default') => {
@@ -58,6 +94,10 @@ class SalonSettings extends Component {
         this.setState({expanded: (this.state.expanded===exp ? null : exp)})
     }
 
+    SaveBattonClick = () => {
+      console.log('SaveBattonClick')
+    }
+
     render() {
         let {SalonServicesList} = this.state
         const filter = createFilterOptions()
@@ -68,14 +108,37 @@ class SalonSettings extends Component {
                     style={{margin:'33px'}}
                     options={Object.values(this.state.AllServices)}
                     groupBy={(option) => option.category_name}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option) => typeof option == 'object' ? option.name : option}
                     autoComplete
                     includeInputInList
                     renderInput={(params) => <TextField {...params} label="autoComplete" margin="normal" />}
                     noOptionsText="Будет создана новая услуга."
                     freeSolo={true}
-                    onChange={(event, newValue) => console.log(event.target, newValue) }
+                    onChange={(event, newValue) => {
+                      console.log(event.target, newValue, typeof newValue)
+                      if (newValue && typeof newValue === 'object') {
+                          this.setState({
+                              CurrentForSave: {
+                                  catId: newValue.category_id,
+                                  serviceId: newValue.id,
+                                  serviceName: newValue.name,
+                              },
+                              CurrentCatSelectDisabled: true,
+                          })
+                      }
+                      if (typeof newValue === 'string') {
+                          this.setState({
+                              CurrentForSave: {
+                                  catId: '',
+                                  serviceId: null,
+                                  serviceName: newValue,
+                              },
+                              CurrentCatSelectDisabled: false,
+                          })
+                      this.setState({CurrentCatSelectOpen: true})
+                      }
 
+                    }}
                     filterOptions={(options, params) => {
 
                             const filtered = filter(options, params);
@@ -90,6 +153,22 @@ class SalonSettings extends Component {
                             return filtered;
                         }}
                 />
+                <div>
+                    <span>{this.state.CurrentForSave.serviceName}</span>
+                    <Select
+                        onChange={(ev) => this.setStateA(['CurrentForSave','catId'], ev.target.value)}
+                        value={this.state.CurrentForSave.catId}
+                        open={this.state.CurrentCatSelectOpen}
+                        onClose={() => this.setState({CurrentCatSelectOpen: false})}
+                        onOpen={() => this.setState({CurrentCatSelectOpen: true})}
+                        disabled={this.state.CurrentCatSelectDisabled}
+                    >
+	                    {Object.values(this.state.AllCategories).map((cat) => (
+	                        <MenuItem value={cat.id} key={cat.id} >{cat.name} </MenuItem>
+	                    ))}
+                    </Select>
+                    <button onClick={this.SaveBattonClick}>сохранить</button>
+                </div>
 
                 <ul>
                 {Object.entries(SalonServicesList).map(([catId, cat]) => (
