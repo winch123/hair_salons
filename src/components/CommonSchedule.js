@@ -25,12 +25,12 @@ class CommonSchedule extends Component {
     componentDidMount() {
         //if (true) return;
 
-        api.get('actual-workshifts-get')
+        apiRequest('actual-workshifts-get')
         .then(res => {
-            console.log(res.data);
+            //console.log(res);
             this.setState({
-                persons: res.data.persons,
-                workshifts: res.data.workshifts,
+                persons: res.persons,
+                workshifts: res.workshifts,
             });
         })
     }

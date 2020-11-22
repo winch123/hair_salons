@@ -17,6 +17,11 @@ const apiRequest = function(url, params={}) {
     return new Promise(function(resolve, reject) {
         api.get(url, {
             params,
+            headers: {
+              'Test-Header': 'test-value',
+              Accept: 'application/json',
+              Authorization: 'Bearer ' + localStorage.getItem("token") || null,
+            },
         })
         .then(res => {
             //console.log(res.data);
