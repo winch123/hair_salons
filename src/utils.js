@@ -14,6 +14,7 @@ const store = createStore(mainReduser, window.__REDUX_DEVTOOLS_EXTENSION__ && wi
 export {store}
 
 const apiRequest = function(url, params={}) {
+    params = Object.assign(params, {salonId: 2})
     return new Promise(function(resolve, reject) {
         api.get(url, {
             params,

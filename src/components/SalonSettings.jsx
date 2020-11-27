@@ -9,6 +9,8 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 
+import {scroller} from 'react-scroll'
+
 import {apiRequest} from "../utils.js"
 
 class SalonSettings extends Component {
@@ -90,12 +92,25 @@ class SalonSettings extends Component {
     }
 
     setExpanded(exp) {
-        //console.log(exp)
-        this.setState({expanded: (this.state.expanded===exp ? null : exp)})
+        this.setState({expanded: (this.state.expanded == exp ? null : String(exp))})
     }
 
     SaveBattonClick = () => {
-      console.log('SaveBattonClick')
+      apiRequest('save-salon-service', this.state.CurrentForSave)
+      .then(res => {
+          for (let k of Object.keys(res.servicesBaranch)) {
+            //console.log(k, res[k])
+            this.setStateA(['SalonServicesList',k], res.servicesBaranch[k])
+          }
+          this.setExpanded(res.categoryId)
+          scroller.scrollTo('service' + res.serviceId, {
+            duration: 1500,
+            delay: 100,
+            smooth: true,
+            //containerId: 'ContainerElementID',
+            offset: 50, // Scrolls to element + 50 pixels down the page
+          })
+      })
     }
 
     render() {
@@ -115,7 +130,7 @@ class SalonSettings extends Component {
                     noOptionsText="Будет создана новая услуга."
                     freeSolo={true}
                     onChange={(event, newValue) => {
-                      console.log(event.target, newValue, typeof newValue)
+                      //console.log(event.target, newValue, typeof newValue)
                       if (newValue && typeof newValue === 'object') {
                           this.setState({
                               CurrentForSave: {
@@ -173,9 +188,12 @@ class SalonSettings extends Component {
                 <ul>
                 {Object.entries(SalonServicesList).map(([catId, cat]) => (
 
-                    <Accordion key={catId} expanded={this.state.expanded === catId} onChange={ () => this.setExpanded(catId)}>
+                    <Accordion key={catId}
+                      expanded={this.state.expanded === catId}
+                      onChange={ () => this.setExpanded(catId)}
+                    >
                         <AccordionSummary  style={{background:'#eee'}} expandIcon={<ExpandMore />}>
-                            <p>{cat.name}</p>
+                            {cat.name}
                         </AccordionSummary>
                         <AccordionDetails>
 
@@ -185,7 +203,7 @@ class SalonSettings extends Component {
 
                             <ul>
                             {Object.entries(cat.services || {}).map(([k, service]) => (
-                                <li key={k}>
+                                <li key={k} name={'service'+k}>
                                     <b style={{display:'inline-block', width:'202px'}}>{service.name}</b>
                                     <span style={{display:'inline-block', width:'122px'}}>
                                         <input type="number"
@@ -205,7 +223,7 @@ class SalonSettings extends Component {
                                     <button title="Добавить всех мастеров" style={{cursor:'pointer'}}>
                                         <GroupAddTwoTone style={{marginBottom:'-5px', fontSize: 24, color:'green'}} />
                                     </button>
-                                    {Object.entries(service.masters).map(([k1, master]) => (
+                                    {Object.entries(service.masters || {}).map(([k1, master]) => (
                                         <li key={k1}>
                                             <span style={{display:'inline-block', width:'122px'}}>
                                                 {master.name}
