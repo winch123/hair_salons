@@ -1,4 +1,7 @@
-import React, { Component } from 'react'
+//import React, { Component } from 'react'
+import React from 'react'
+import BaseComponent from './BaseComponent.js'
+
 import { SaveTwoTone, RemoveCircleTwoTone, GroupAddTwoTone, ExpandMore } from '@material-ui/icons'
 import TextField from '@material-ui/core/TextField';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
@@ -13,7 +16,7 @@ import {scroller} from 'react-scroll'
 
 import {apiRequest} from "../utils.js"
 
-class SalonSettings extends Component {
+class SalonSettings extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -51,29 +54,6 @@ class SalonSettings extends Component {
 
     EditButtonClick(serviceId) {
         console.log(serviceId)
-    }
-
-    setStateA = (path, value) => {
-      let rootName = path.shift()
-      let someProperty = {...this.state[rootName]}
-      //console.log(rootName)
-      //console.log(path)
-      //console.log(value)
-      //console.log(someProperty)
-
-      let cur = someProperty
-      for (let ind of path ) {
-          if(typeof cur[ind] === 'undefined') {
-              throw new Error(ind + " not found");
-          }
-          if (path[path.length - 1] === ind)
-              cur[ind] = value
-          else
-              cur = cur[ind]
-      }
-      //someProperty['catId'] = value
-
-      this.setState({[rootName]: someProperty})
     }
 
     DurationChange = (event, serviceId, type='duration_default') => {

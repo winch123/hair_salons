@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+//import React from 'react'
+import BaseComponent from './BaseComponent.js'
+
 import {api, apiRequest} from "../utils.js";
 import { connect } from 'react-redux';
 
 import  DayPersonalSchedule from './DayPersonalSchedule';
 
-class CommonSchedule extends Component {
+class CommonSchedule extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
