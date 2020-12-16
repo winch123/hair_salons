@@ -4,13 +4,25 @@ function setSchedule(state = {}, act) {
     let newState = Object.assign({}, state);
     if (act.type === 'UPDATE_SCHEDULE_SHIFTS') {
         for (let key in act.value) {
-            //console.log(key, act.value[key])
             act.value[key].updated = new Date()
             newState[key] = act.value[key]
         }
         return newState;
     }
     return state;
+}
+
+function setSalonServices(state = {}, act) {
+    let newState = Object.assign({}, state)
+    if (act.type === 'UPDATE_SALON_SERVICES') {
+        for (let key in act.value) {
+            //console.log(key, act.value[key])
+            act.value[key].updated = new Date()
+            newState[key] = act.value[key]
+        }
+        return newState;
+    }
+    return state
 }
 /*
 function todos(state = [], action) {
@@ -46,6 +58,7 @@ const mainReducer = combineReducers({
 function mainReducer(state = {}, action) {
     return {
         schedule: setSchedule(state.schedule, action),
+        salonServices: setSalonServices(state.salonServices, action),
         //todos: todos(state.todos, action),
     }
 }

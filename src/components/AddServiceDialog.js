@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import TimeIntervalSelect from './TimeIntervalSelect';
 import {apiRequest} from "../utils.js";
 
-export default class AddServiceDialog extends Component {
+class AddServiceDialog extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -31,9 +32,7 @@ export default class AddServiceDialog extends Component {
     }
 
     render() {
-
         const saveServiceInShedule = () => {
-
             apiRequest('schedule-add-service', {
                 shiftId: this.props.currentShiftId,
                 masterServiceId: 4, /// стрижка какая-то
@@ -41,17 +40,32 @@ export default class AddServiceDialog extends Component {
                 endTime: this.state.toTime,
                 comment: this.state.textComment,
             })
-
             this.props.onClose()
         };
+
+        console.log(Object.entries(this.props.salonServices))
 
         return (
             <div style={{overflowX:'hidden'}} >
                 <select onChange={this.onChangeInterval} value={this.state.currInterval} >
                     {this.state.listOfIntervals.map((interval) => (
-                        <option value={interval} key={interval} >{interval} </option>
+                        <option value={interval} key={interval} >interval: {interval}</option>
                     ))}
                 </select>
+
+                <div>
+                  <select>
+                    {Object.entries(this.props.salonServices).map(([catId, cat]) => (
+                      <optgroup key={catId} label={cat.name} >
+                        {Object.entries(cat.services).map(([servId, serv]) => (
+                          <option value={servId} key={servId} >
+                            {serv.duration_default} мин - {serv.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
+                </div>
 
                 <div style={{width:'80vw', margin:'22px', display:'block', overflow:'hidden' }}>
                     <div style={{textAlign:'right'}}>Комментарий</div>
@@ -82,3 +96,11 @@ export default class AddServiceDialog extends Component {
         );
     }
 }
+
+export default  connect(
+    (storeState) => {
+        return {
+          salonServices: storeState.salonServices,
+        }
+    }
+)(AddServiceDialog)

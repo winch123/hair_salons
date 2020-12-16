@@ -1,8 +1,8 @@
-//import React, { Component } from 'react'
 import React from 'react'
+import { connect } from 'react-redux'
 import BaseComponent from './BaseComponent.js'
 
-import { SaveTwoTone, RemoveCircleTwoTone, GroupAddTwoTone, ExpandMore } from '@material-ui/icons'
+import { /*SaveTwoTone,*/ RemoveCircleTwoTone, GroupAddTwoTone, ExpandMore } from '@material-ui/icons'
 import TextField from '@material-ui/core/TextField';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import Select from '@material-ui/core/Select';
@@ -14,13 +14,15 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 
 import {scroller} from 'react-scroll'
 
-import {apiRequest} from "../utils.js"
+import {apiRequest, store} from "../utils.js"
 
 class SalonSettings extends BaseComponent {
     constructor(props) {
         super(props);
+        //console.log('constructor', props);
+
         this.state = {
-            SalonServicesList: {},
+            SalonServicesParams: {},
             options: [{text:'aaaaaaa'}, {text:'bbbbb'}],
             AllServices: {},
             AllCategories: {},
@@ -36,11 +38,6 @@ class SalonSettings extends BaseComponent {
     }
 
     componentDidMount() {
-        apiRequest('get-salon-services-list', {salonId:1})
-        .then(res => {
-            //console.log(res)
-            this.setState({SalonServicesList: res})
-        })
 
         apiRequest('get-all-services-dir')
         .then(res => {
@@ -52,16 +49,19 @@ class SalonSettings extends BaseComponent {
         })
     }
 
-    EditButtonClick(serviceId) {
-        console.log(serviceId)
-    }
+    componentDidUpdate(prevProps) {
+      //console.log('componentDidUpdate', prevProps, this.props)
 
-    DurationChange = (event, serviceId, type='duration_default') => {
-        //console.log(event.target.value, serviceId)
-        //console.log(this)
-        let someProperty = {...this.state.SalonServicesList}
-        someProperty[serviceId][type] = event.target.value
-        this.setState(someProperty)
+      if (this.props.salonServices !== prevProps.salonServices) {
+	let p = {}
+	for (let i in this.props.salonServices) {
+		for (let j in this.props.salonServices[i].services) {
+			//console.log(j, this.props.salonServices[i].services[j])
+			p[j] = this.props.salonServices[i].services[j]
+		}
+	}
+	this.setState({SalonServicesParams: p})
+      }
     }
 
     RemoveMaster(event, serviceId, masterId) {
@@ -72,16 +72,17 @@ class SalonSettings extends BaseComponent {
     }
 
     setExpanded(exp) {
-        this.setState({expanded: (this.state.expanded == exp ? null : String(exp))})
+        this.setState({expanded: (this.state.expanded === exp ? null : String(exp))})
     }
 
     SaveBattonClick = () => {
       apiRequest('save-salon-service', this.state.CurrentForSave)
       .then(res => {
-          for (let k of Object.keys(res.servicesBaranch)) {
-            //console.log(k, res[k])
-            this.setStateA(['SalonServicesList',k], res.servicesBaranch[k])
-          }
+          store.dispatch({
+            type: 'UPDATE_SALON_SERVICES',
+            value: res.servicesBaranch,
+          })
+
           this.setExpanded(res.categoryId)
           scroller.scrollTo('service' + res.serviceId, {
             duration: 1500,
@@ -90,12 +91,13 @@ class SalonSettings extends BaseComponent {
             //containerId: 'ContainerElementID',
             offset: 50, // Scrolls to element + 50 pixels down the page
           })
-      })
+       })
     }
 
     render() {
-        let {SalonServicesList} = this.state
+        let {salonServices} = this.props
         const filter = createFilterOptions()
+        console.log('render', this.state.SalonServicesParams)
 
         return (
             <div>
@@ -166,7 +168,7 @@ class SalonSettings extends BaseComponent {
                 </div>
 
                 <ul>
-                {Object.entries(SalonServicesList).map(([catId, cat]) => (
+                {Object.entries(salonServices || {}).map(([catId, cat]) => (
 
                     <Accordion key={catId}
                       expanded={this.state.expanded === catId}
@@ -176,27 +178,22 @@ class SalonSettings extends BaseComponent {
                             {cat.name}
                         </AccordionSummary>
                         <AccordionDetails>
-
-                            <button title="сохранить"  onClick={this.EditButtonClick.bind(this)}>
-                                <SaveTwoTone style={{ fontSize: 24, color:'green' }} />
-                            </button>
-
                             <ul>
-                            {Object.entries(cat.services || {}).map(([k, service]) => (
-                                <li key={k} name={'service'+k}>
+                            {Object.entries(cat.services || {}).map(([serviceId, service]) => (
+                                <li key={serviceId} name={'service'+serviceId}>
                                     <b style={{display:'inline-block', width:'202px'}}>{service.name}</b>
                                     <span style={{display:'inline-block', width:'122px'}}>
                                         <input type="number"
-                                            value={service.price_default}
-                                            onChange={(event) => this.DurationChange(event, k, 'price_default')}
+                                            value={(this.state.SalonServicesParams[serviceId] || {}).price_default}
+                                            onChange={(event) => this.setStateA(['SalonServicesParams',serviceId,'price_default'], event.target.value)}
                                             onFocus={(event) => event.target.select()}
                                             style={{width:'44px'}} /> руб.
                                     </span>
 
                                     <span style={{display:'inline-block', width:'122px'}}>
                                         <input type="number" step='5'
-                                            value={service.duration_default}
-                                            onChange={(event) => this.DurationChange(event, k)}
+                                            value={(this.state.SalonServicesParams[serviceId] || {}).duration_default}
+                                            onChange={(event) => this.setStateA(['SalonServicesParams',serviceId,'duration_default'], event.target.value)}
                                             style={{width:'44px'}} /> мин
                                     </span>
                                     <ul>
@@ -210,7 +207,7 @@ class SalonSettings extends BaseComponent {
                                             </span>
                                             <RemoveCircleTwoTone
                                                 style={{marginBottom:'-5px', cursor:'pointer'}}
-                                                onClick={(event) => this.RemoveMaster(event, k, k1) }  />
+                                                onClick={(event) => this.RemoveMaster(event, serviceId, k1) }  />
                                         </li>
                                     ))}
                                     </ul>
@@ -230,4 +227,10 @@ class SalonSettings extends BaseComponent {
     }
 }
 
-export default SalonSettings
+export default  connect(
+    (storeState) => {
+        return {
+          salonServices: storeState.salonServices,
+        }
+    }
+)(SalonSettings)

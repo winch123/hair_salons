@@ -11,16 +11,28 @@ import Login from './components/Login';
 import test from './components/test';
 import './App.css';
 
-import {store} from './utils'
+import {store, apiRequest} from './utils'
 
 export default function App() {
+  apiRequest('get-salon-services-list', {salonId:1})
+  .then(res => {
+      //console.log(res)
+      store.dispatch({
+        type: 'UPDATE_SALON_SERVICES', 
+        value: res,
+      })
+  })
 
   const history = createBrowserHistory()
 
   return (
     <Provider store={store}>
+        <div style={{float:'left'}}>
+          <a href="/settings">settings</a>
+        </div>
         <header className="App-header">
             <h2>H. S.</h2>
+
         </header>
 
         <Router history={history}>
