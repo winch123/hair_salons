@@ -29,9 +29,7 @@ const apiRequest = function(url, params={}) {
             if (res.data.actions) {
                 for (let action of res.data.actions ) {
                     //store.dispatch({ type: 'UPDATE_SCHEDULE_SHIFTS', value:{[id]: res.data[id], }})
-                    store.dispatch(action)
-                    //action.type += 'aaa'
-                    //console.log( action.type )
+                    store.dispatch({type: action.type, value: action.value})
                 }
             }
             if (res.data.redirect) {

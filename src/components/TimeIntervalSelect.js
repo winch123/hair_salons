@@ -83,8 +83,6 @@ export default class TimeIntervalSelect extends Component {
     */
 
   render() {
-    console.info('render');
-    //console.log(this.state);
 
     let {fromHour, fromMinute, toHour, toMinute, fromHourFix, fromMinuteFix, toHourFix, toMinuteFix, beginHour, beginMinute, endHour, endMinute} = this.state
     return (

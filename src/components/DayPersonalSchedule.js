@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import AddServiceDialog from './AddServiceDialog'
 import Dialog from '@material-ui/core/Dialog'
 
-export default class DayPersonalSchedule extends Component {
+class DayPersonalSchedule extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -87,7 +88,7 @@ export default class DayPersonalSchedule extends Component {
 
         return (
             <div>
-                <h2>{this.props.title}</h2>
+                <h2>{this.props.persons[this.props.DaySchedule.master_id].name}  рассписание на </h2>
                 {sch1.map((d, index) => (
                     <div key={index} className="DaySchedule-interval" onClick={this.onIntervalClick.bind(this, d.begin, d.duration, d.s_type)}>
                         <div>
@@ -130,3 +131,12 @@ export default class DayPersonalSchedule extends Component {
         );
     }
 }
+
+export default  connect(
+    (storeState) => {
+        return {
+            schedule: storeState.schedule,
+	    persons: storeState.persons,
+        }
+    }
+)(DayPersonalSchedule);

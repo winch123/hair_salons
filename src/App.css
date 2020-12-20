@@ -35,6 +35,15 @@
 
 /**********************************************************/
 
+.CommonSchedule-Shift {
+		cursor: pointer;
+		border: solid 1px;
+		padding: 5px;
+}
+.CommonSchedule-Shift:hover {
+	background: #ECF6CE;
+}
+
 .CommonSchedule-ShiftActive {
     color: red;
 }

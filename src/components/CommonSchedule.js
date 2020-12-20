@@ -3,6 +3,7 @@ import BaseComponent from './BaseComponent.js'
 
 import {apiRequest, store} from "../utils.js";
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 import  DayPersonalSchedule from './DayPersonalSchedule';
 
@@ -58,12 +59,14 @@ class CommonSchedule extends BaseComponent {
                                 {Object.keys(workshifts).map((k2) => (
                                     <td key={k2}>
                                         { workshifts[k2].masters[master.id] &&
-                                            <button
+                                            <div
                                                 onClick = {() => this.onSelectWorkshift(workshifts[k2].masters[master.id].shift_id, master.id, k2)}
-                                                className = {this.state.currentShiftId === workshifts[k2].masters[master.id].shift_id  ? 'CommonSchedule-ShiftActive' : ''}
+                                                className = {classNames('CommonSchedule-Shift',
+						    this.state.currentShiftId === workshifts[k2].masters[master.id].shift_id  ? 'CommonSchedule-ShiftActive' : '')}
                                             >
-                                                {workshifts[k2].masters[master.id].text}
-                                            </button>
+                                                <div style={{fontSize:'1.1em'}}>{workshifts[k2].masters[master.id].text}</div>
+                                                <div style={{fontSize:'0.8em'}}>{workshifts[k2].masters[master.id].description}</div>
+                                            </div>
                                         }
                                     </td>
                                 )) }
@@ -82,7 +85,6 @@ class CommonSchedule extends BaseComponent {
                 {
                     this.props.schedule[this.state.currentShiftId] &&
                         <DayPersonalSchedule
-                            title = "рассписание"
                             DaySchedule = {this.props.schedule[this.state.currentShiftId]}
                             currentShiftId = {this.state.currentShiftId}
                         />
