@@ -1,6 +1,6 @@
 //import { combineReducers } from 'redux'
 
-function setSchedule(state = {}, act) {
+function schedule(state = {}, act) {
     let newState = Object.assign({}, state);
     if (act.type === 'UPDATE_SCHEDULE_SHIFTS') {
         for (let key in act.value) {
@@ -12,7 +12,7 @@ function setSchedule(state = {}, act) {
     return state;
 }
 
-function setSalonServices(state = {}, act) {
+function salonServices(state = {}, act) {
     let newState = Object.assign({}, state)
     if (act.type === 'UPDATE_SALON_SERVICES') {
         for (let key in act.value) {
@@ -24,6 +24,35 @@ function setSalonServices(state = {}, act) {
     }
     return state
 }
+
+function persons(state = {}, act) {
+    let newState = Object.assign({}, state)
+    if (act.type === 'UPDATE_PERSONS') {
+        for (let key in act.value) {
+            //console.log(key, act.value[key])
+            act.value[key].updated = new Date()
+            newState[key] = act.value[key]
+        }
+        return newState;
+    }
+    return state
+}
+
+function workshifts(state = {}, act) {
+    let newState = Object.assign({}, state)
+    if (act.type === 'UPDATE_WORKSHIFTS') {
+        for (let key in act.value) {
+            //console.log(key, act.value[key])
+            act.value[key].updated = new Date()
+            newState[key] = act.value[key]
+        }
+        return newState;
+    }
+    return state
+}
+
+
+
 /*
 function todos(state = [], action) {
   switch (action.type) {
@@ -57,8 +86,10 @@ const mainReducer = combineReducers({
 
 function mainReducer(state = {}, action) {
     return {
-        schedule: setSchedule(state.schedule, action),
-        salonServices: setSalonServices(state.salonServices, action),
+        schedule: schedule(state.schedule, action),
+        salonServices: salonServices(state.salonServices, action),
+        persons: persons(state.persons, action),
+        workshifts: workshifts(state.workshifts, action),
         //todos: todos(state.todos, action),
     }
 }

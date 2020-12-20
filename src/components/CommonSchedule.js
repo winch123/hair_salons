@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-//import React from 'react'
+import React from 'react';
 import BaseComponent from './BaseComponent.js'
 
-import {api, apiRequest} from "../utils.js";
+import {apiRequest, store} from "../utils.js";
 import { connect } from 'react-redux';
 
 import  DayPersonalSchedule from './DayPersonalSchedule';
@@ -11,30 +10,22 @@ class CommonSchedule extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
-            workshifts: {
-                20201001: {caption:'сегодня', masters:{1: 'иии 1', 2:'ппп 1' ,3:'sss 1'} },
-                20201002: {caption:'завтра', masters:{1: 'иии 2', 2:'ппп 2' ,3:'sss 2'}},
-                20201003: {caption:'послезавтра', masters:{1: 'иии 3', 3:'sss 3'}},
-            },
-            persons: [
-                {id:1, name:'Иванова',},
-                {id:2, name:'Петрова',},
-                {id:3, name:'Сидорова',},
-            ],
             currentShiftId: null,
         };
     };
 
     componentDidMount() {
-        //if (true) return;
-
         apiRequest('actual-workshifts-get')
         .then(res => {
             //console.log(res);
-            this.setState({
-                persons: res.persons,
-                workshifts: res.workshifts,
-            });
+	    store.dispatch({
+	      type: 'UPDATE_PERSONS',
+	      value: res.persons,
+	    })
+	    store.dispatch({
+	      type: 'UPDATE_WORKSHIFTS',
+	      value: res.workshifts,
+	    })
         })
     }
 
@@ -48,7 +39,7 @@ class CommonSchedule extends BaseComponent {
     }
 
     render() {
-        let {workshifts} = this.state
+        let {workshifts} = this.props
         return (
             <div>
                 <table>
@@ -61,7 +52,7 @@ class CommonSchedule extends BaseComponent {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.persons.map((master) => (
+                        {Object.values(this.props.persons).map((master) => (
                             <tr key={master.id}>
                                 <td>{master.name}</td>
                                 {Object.keys(workshifts).map((k2) => (
@@ -108,6 +99,8 @@ export default  connect(
         //console.log(storeState.schedule)
         return {
             schedule: storeState.schedule,
+            workshifts: storeState.workshifts,
+	    persons: storeState.persons,
         }
     },
     (dispatch) => {
