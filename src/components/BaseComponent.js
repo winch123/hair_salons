@@ -4,25 +4,63 @@ export default class BaseComponent extends Component {
 
   setStateA = (path, value) => {
       let rootName = path.shift()
-      let someProperty = {...this.state[rootName]}
+	  //console.log(this.state[rootName])
+	  //console.log(typeof this.state[rootName])
+	  //console.log(Object.prototype.toString.call(this.state[rootName]))
+
+      let ss = Array.isArray(this.state[rootName])
+		? [...this.state[rootName]]
+		: {...this.state[rootName]}
       //console.log(rootName)
       //console.log(path)
       //console.log(value)
       //console.log(someProperty)
 
-      let cur = someProperty
+      let cur = ss
       for (let ind of path ) {
-          if(typeof cur[ind] === 'undefined') {
+          if (typeof cur[ind] === 'undefined') {
               throw new Error(ind + " not found");
           }
-          if (path[path.length - 1] === ind)
+		  //console.log(ind)
+		  //console.log(Object.prototype.toString.call(cur))
+          if (path[path.length - 1] === ind) {
               cur[ind] = value
-          else
+		  }
+          else {
               cur = cur[ind]
+		  }
       }
       //someProperty['catId'] = value
+	  //console.log(someProperty)
 
-      this.setState({[rootName]: someProperty})
+      this.setState({[rootName]: ss})
+  }
+
+  deleteFromState = (path) => {
+      let rootName = path.shift()
+      let ss = Array.isArray(this.state[rootName])
+		? [...this.state[rootName]]
+		: {...this.state[rootName]}
+
+      let cur = ss
+      let iterations = path.length
+      for (let ind of path ) {
+          if (typeof cur[ind] === 'undefined') {
+              throw new Error(ind + " not found");
+          }
+          if (--iterations) {
+	    cur = cur[ind]
+	  }
+      }
+
+      if (Array.isArray(cur)) {
+	  cur.splice(path[path.length - 1], 1)
+      }
+      else {
+	  delete cur[path[path.length - 1]]
+      }
+
+      this.setState({[rootName]: ss})
   }
 
 }

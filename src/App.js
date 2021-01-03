@@ -5,6 +5,7 @@ import {createBrowserHistory} from 'history'
 
 import PrivateRoute from './components/helpers/PrivateRoute'
 //import AddServiceDialog from './components/AddServiceDialog';
+import MySalonActiveRequests from './components/MySalonActiveRequests'
 import CommonSchedule from './components/CommonSchedule';
 import SalonSettings from './components/SalonSettings';
 import Login from './components/Login';
@@ -18,7 +19,7 @@ export default function App() {
   .then(res => {
       //console.log(res)
       store.dispatch({
-        type: 'UPDATE_SALON_SERVICES', 
+        type: 'UPDATE_SALON_SERVICES',
         value: res,
       })
   })
@@ -31,8 +32,8 @@ export default function App() {
           <a href="/settings">settings</a>
         </div>
         <header className="App-header">
+	    <MySalonActiveRequests/>
             <h2>H. S.</h2>
-
         </header>
 
         <Router history={history}>
