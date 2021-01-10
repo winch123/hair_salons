@@ -1,11 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import BaseComponent from './BaseComponent.js'
 
 import {apiRequest} from "../utils.js"
 import {Button, Progress, Popover} from 'antd'
 import {CheckCircleOutlined, CloseCircleOutlined} from '@ant-design/icons'
 
-export default class MySalonActiveRequests extends BaseComponent {
+class MySalonActiveRequests extends BaseComponent {
     constructor(props) {
         super(props)
         this.state = {
@@ -35,13 +36,15 @@ export default class MySalonActiveRequests extends BaseComponent {
 		clearInterval(this.intervalInstance)
 	}
 
-    answer = (serviceRequest, result) => {
-	console.log(serviceRequest.id, result)
-	serviceRequest.title = 'угуу ' + result
-	
-	setTimeout(() => {
-	  this.deleteFromState(['activeRequestsList', serviceRequest.id])
-	}, 2500)
+    answer = (serviceRequest, answer, shiftId) => {
+		console.log(serviceRequest.id, answer)
+
+		apiRequest('/set_my_response', {serviceRequestId: serviceRequest.id, shiftId: shiftId})
+		.then( r => {
+
+		})
+		this.deleteFromState(['activeRequestsList', serviceRequest.id])
+		serviceRequest.title = 'угуу '
     }
 
     mumumu = () => {
@@ -55,22 +58,27 @@ export default class MySalonActiveRequests extends BaseComponent {
 
     render() {
 
-      const popoverContent = (serviceRequest) => (
-	<div>
-	    {serviceRequest.id}
-	    <Button type="primary" size="small"
-		icon={<CheckCircleOutlined />}
-		onClick={() => this.answer(serviceRequest, 'yes')}
-	    >
-	    </Button>
+	const popoverContent = (serviceRequest) => (<div>
+			{Object.entries(serviceRequest.vacancyInShifts).map(([shiftId, shiftData]) => (
+				<div key={shiftId}>
+					{shiftData.can_be_shoved &&
+						<Button type="primary" size="small"
+							icon={<CheckCircleOutlined />}
+							onClick={() => this.answer(serviceRequest, 'yes', shiftId)}
+						>
+						</Button>
+					}
+					{this.props.persons[shiftData.masterId].name}
+				</div>
+			))}
 
-	    <Button type="primary" size="small" danger
-		icon={<CloseCircleOutlined />}
-		onClick={() => this.answer(serviceRequest, 'no')}
-	    >
-	    </Button>
-	</div>
-      );
+			<Button type="primary" size="small" danger
+				icon={<CloseCircleOutlined />}
+				onClick={() => this.answer(serviceRequest, 'no')}
+			>
+				Отказать
+			</Button>
+	</div>);
 
       return (<div>
 	  <button onClick={this.mumumu}>mu</button>
@@ -98,3 +106,12 @@ export default class MySalonActiveRequests extends BaseComponent {
 
     }
 }
+
+export default  connect(
+    (storeState) => {
+        //console.log(storeState.schedule)
+        return {
+			persons: storeState.persons,
+        }
+    }
+)(MySalonActiveRequests);
