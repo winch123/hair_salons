@@ -1,6 +1,9 @@
 import axios from "axios"
 import { createStore } from 'redux'
 import mainReduser from './reducers'
+import React from 'react'
+import { notification } from 'antd'
+import { CheckCircleOutlined, InfoCircleOutlined, WarningOutlined } from '@ant-design/icons'
 
 let api = axios.create({
   // baseURL: "http://hair-salons.local/salon/",
@@ -35,6 +38,22 @@ const apiRequest = function(url, params={}) {
             if (res.data.redirect) {
                 apiRequest(res.data.redirect.url, res.data.redirect.params || null)
             }
+			if (res.data.message) {
+				notification.open({
+					message: res.data.message.title,
+					description: res.data.message.text,
+					onClick: () => {
+					console.log('Notification Clicked!')
+					},
+					duration: 4,
+					icon: {
+						info: <InfoCircleOutlined style={{ color: '#108ee9' }} />,
+						ok: <CheckCircleOutlined style={{ color: 'green' }} />,
+						warning: <WarningOutlined style={{ color: 'red' }} />,
+					}[res.data.message.iconType],
+					style: {backgroundColor: 'Cornsilk'},
+				})
+			}
 
             resolve(res.data)
         })
