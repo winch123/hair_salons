@@ -87,7 +87,7 @@ class CommonSchedule extends BaseComponent {
 						    this.state.currentShiftId === workshifts[selDate].masters[master.id].shift_id  ? 'CommonSchedule-ShiftActive' : '')}
                                             >
                                                 <div style={{fontSize:'1.1em'}}>{workshifts[selDate].masters[master.id].text}</div>
-                                                <div style={{fontSize:'0.8em'}}>{workshifts[selDate].masters[master.id].description}</div>
+                                                <div style={{fontSize:'0.8em'}}  dangerouslySetInnerHTML={{__html: workshifts[selDate].masters[master.id].description}} />
                                             </div>
                                         ||
 					  <div>
