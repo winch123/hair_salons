@@ -43,10 +43,18 @@
 .CommonSchedule-Shift:hover {
 	background: #ECF6CE;
 }
-
 .CommonSchedule-ShiftActive {
     color: red;
 }
+
+.CommonSchedule-rowDate {
+	height: 22px;
+	text-align: center;
+}
+.CommonSchedule-rowMaster {
+	height: 66px;
+}
+
 
 .DaySchedule-interval {
     border: solid 1px;
@@ -68,6 +76,7 @@
 .time-point {
   padding:3px;
   border:solid white 1px;
+  cursor:pointer;
 }
 .time-point:hover {
   border-color: red;

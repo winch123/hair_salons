@@ -15,14 +15,18 @@ class CommonSchedule extends BaseComponent {
         super(props);
         this.state = {
             currentShiftId: null,
-	    createShiftButtonVisible: false,
+		createShiftButtonVisible: false,
 	    selectedMasterId: null,
 	    selectedDate: null
         };
+	this.myRef = React.createRef()
     };
 
     componentDidMount() {
       this.UpdateWorkshifts()
+      setTimeout(() => {
+	this.myRef.current.scrollLeft = 100
+      }, 500)
     }
 
     UpdateWorkshifts() {
@@ -49,10 +53,23 @@ class CommonSchedule extends BaseComponent {
         });
     }
 
+	onScroll = () => {
+		//const scrollY = window.scrollY //Don't get confused by what's scrolling - It's not the window
+		const scrollTop = this.myRef.current.scrollTop
+		const scrollY = this.myRef.current.scrollLeft
+		//console.log(`scrollY: ${scrollY} scrollTop: ${scrollTop}`)
+	}
+
+	onWheel = (e) => {
+		e.preventDefault()
+		//console.log(e.target, e.deltaY)
+		this.myRef.current.scrollLeft += e.deltaY * 5
+	}
+
     render() {
         let {workshifts} = this.props
         return (
-            <div>
+            <div style={{userSelect: 'none'}}>
 		<CreateShift
 		    visible = {this.state.createShiftButtonVisible}
 		    onClose = {(result) => {
@@ -65,48 +82,66 @@ class CommonSchedule extends BaseComponent {
 		    selectedDate = {this.state.selectedDate}
 		/>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            {Object.keys(workshifts).map((k1) => (
-                                <th key={k1}>{workshifts[k1].caption}</th>
-                            )) }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Object.values(this.props.persons).map((master) => (
-                            <tr key={master.id}>
-                                <td>{master.name}</td>
-                                {Object.keys(workshifts).map((selDate) => (
-                                    <td key={selDate}>
-                                        { workshifts[selDate].masters[master.id] &&
-                                            <div
-                                                onClick = {() => this.onSelectWorkshift(workshifts[selDate].masters[master.id].shift_id, master.id, selDate)}
-                                                className = {classNames('CommonSchedule-Shift',
-						    this.state.currentShiftId === workshifts[selDate].masters[master.id].shift_id  ? 'CommonSchedule-ShiftActive' : '')}
-                                            >
-                                                <div style={{fontSize:'1.1em'}}>{workshifts[selDate].masters[master.id].text}</div>
-                                                <div style={{fontSize:'0.8em'}}  dangerouslySetInnerHTML={{__html: workshifts[selDate].masters[master.id].description}} />
-                                            </div>
-                                        ||
-					  <div>
-					    Нет смены.<br/>
-					    <button onClick = {() => this.setState({
-						createShiftButtonVisible: true,
-						selectedMasterId: master.id,
-						selectedDate: selDate,
-					    })}>
-					      создать
-					    </button>
-					  </div>
-					}
-                                    </td>
-                                )) }
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+		<table style={{float:'left'}}>
+			<thead>
+				<tr className='CommonSchedule-rowDate' />
+			</thead>
+			<tbody>
+			{Object.values(this.props.persons).map((master) => (
+				<tr key={master.id} className='CommonSchedule-rowMaster'>
+					<td>{master.name}</td>
+				</tr>
+			))}
+			</tbody>
+		</table>
+
+		<div style={{width:'555px', overflowX:'scroll'}}
+			ref={this.myRef}
+			onScroll={this.onScroll}
+			onWheel = {(e) => this.onWheel(e)}
+		>
+			<table style={{marginLeft:'100px'}}>
+				<thead>
+				<tr className='CommonSchedule-rowDate'>
+				{Object.keys(workshifts).map((k1) => (
+					<th key={k1}>{workshifts[k1].caption}</th>
+				))}
+				</tr>
+				</thead>
+				<tbody>
+				{Object.values(this.props.persons).map((master) => (
+					<tr key={master.id} className='CommonSchedule-rowMaster'>
+					{Object.keys(workshifts).map((selDate) => (
+					    <td key={selDate} style={{}}>
+						{ workshifts[selDate].masters[master.id] &&
+							<div
+								onClick = {() => this.onSelectWorkshift(workshifts[selDate].masters[master.id].shift_id, master.id, selDate)}
+								className = {classNames('CommonSchedule-Shift',
+								this.state.currentShiftId === workshifts[selDate].masters[master.id].shift_id  ? 'CommonSchedule-ShiftActive' : '')}
+							>
+								<div style={{fontSize:'1.1em', width:'155px'}}>{workshifts[selDate].masters[master.id].text}</div>
+								<div style={{fontSize:'0.8em'}}  dangerouslySetInnerHTML={{__html: workshifts[selDate].masters[master.id].description}} />
+							</div>
+						||
+							<div>
+								Нет смены.<br/>
+								<button onClick = {() => this.setState({
+									createShiftButtonVisible: true,
+									selectedMasterId: master.id,
+									selectedDate: selDate,
+								})}>
+									создать
+								</button>
+							</div>
+						}
+						</td>
+					))}
+					</tr>
+				))}
+				</tbody>
+			</table>
+		</div>
+
                 <div>
                     текущая смена: {this.state.currentShiftId}
                 </div>
