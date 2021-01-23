@@ -25,6 +25,7 @@ class Login extends Component {
     }).then(res => {
       if (res.token) {
         localStorage.setItem("token", res.token)
+		this.props.history.replace('/')
       }
     })
   }

@@ -4,6 +4,10 @@ import mainReduser from './reducers'
 import React from 'react'
 import { notification } from 'antd'
 import { CheckCircleOutlined, InfoCircleOutlined, WarningOutlined } from '@ant-design/icons'
+import { createBrowserHistory } from 'history'
+
+const history = createBrowserHistory()
+export {history}
 
 let api = axios.create({
   // baseURL: "http://hair-salons.local/salon/",
@@ -28,7 +32,7 @@ const apiRequest = function(url, params={}) {
             },
         })
         .then(res => {
-            //console.log(res.data);
+			//console.log(url, res.status)
             if (res.data.actions) {
                 for (let action of res.data.actions ) {
                     //store.dispatch({ type: 'UPDATE_SCHEDULE_SHIFTS', value:{[id]: res.data[id], }})
@@ -57,6 +61,15 @@ const apiRequest = function(url, params={}) {
 
             resolve(res.data)
         })
+		.catch(error => {
+			//console.log(url)
+			//console.log(error.response)
+			//console.log(error.request)
+			//console.log(error.message)
+			if (error.response.status === 403) {
+				history.push('/login')
+			}
+		})
     })
 }
 

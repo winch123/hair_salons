@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router, Route, Switch, Redirect } from "react-router-dom"
-import {createBrowserHistory} from 'history'
+//import {createBrowserHistory} from 'history'
 
 import PrivateRoute from './components/helpers/PrivateRoute'
 //import AddServiceDialog from './components/AddServiceDialog';
@@ -12,7 +12,7 @@ import Login from './components/Login';
 import test from './components/test';
 import './App.css';
 
-import {store, apiRequest} from './utils'
+import {store, apiRequest, history} from './utils'
 
 export default function App() {
   apiRequest('get-salon-services-list', {salonId:1})
@@ -24,7 +24,7 @@ export default function App() {
       })
   })
 
-  const history = createBrowserHistory()
+  //const history = createBrowserHistory()
 
   return (
     <Provider store={store}>
