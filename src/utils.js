@@ -11,7 +11,8 @@ export {history}
 
 let api = axios.create({
   // baseURL: "http://hair-salons.local/salon/",
-  baseURL: "http://hair-salons.local/api/",
+  //baseURL: "http://hair-salons.local/api/",
+  baseURL: "https://hs.local/api/",
   responseType: "json"
 });
 
@@ -63,10 +64,11 @@ const apiRequest = function(url, params={}) {
         })
 		.catch(error => {
 			//console.log(url)
-			//console.log(error.response)
+			//console.log(error)
+			console.log(error.response)
 			//console.log(error.request)
 			//console.log(error.message)
-			if (error.response.status === 403) {
+			if (error.response && error.response.status === 403) {
 				history.push('/login')
 			}
 		})
