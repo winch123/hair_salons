@@ -1,6 +1,6 @@
 //import { combineReducers } from 'redux'
 
-function schedule(state = {}, act) {
+function updateSchedule(state = {}, act) {
     let newState = Object.assign({}, state);
     if (act.type === 'UPDATE_SCHEDULE_SHIFTS') {
         for (let key in act.value) {
@@ -12,7 +12,7 @@ function schedule(state = {}, act) {
     return state;
 }
 
-function salonServices(state = {}, act) {
+function updateSalonServices(state = {}, act) {
     let newState = Object.assign({}, state)
     if (act.type === 'UPDATE_SALON_SERVICES') {
         for (let key in act.value) {
@@ -25,7 +25,7 @@ function salonServices(state = {}, act) {
     return state
 }
 
-function persons(state = {}, act) {
+function updatePersons(state = {}, act) {
     let newState = Object.assign({}, state)
     if (act.type === 'UPDATE_PERSONS') {
         for (let key in act.value) {
@@ -38,7 +38,7 @@ function persons(state = {}, act) {
     return state
 }
 
-function workshifts(state = {}, act) {
+function updateWorkshifts(state = {}, act) {
     let newState = Object.assign({}, state)
     if (act.type === 'UPDATE_WORKSHIFTS') {
         for (let key in act.value) {
@@ -51,6 +51,14 @@ function workshifts(state = {}, act) {
     return state
 }
 
+function setCurrentModal(state = null, act) {
+	let newState = Object.assign({}, state)
+	if (act.type === 'SET_CURRENT_MODAL') {
+		newState = act.value
+		return newState
+	}
+	return state
+}
 
 
 /*
@@ -86,10 +94,11 @@ const mainReducer = combineReducers({
 
 function mainReducer(state = {}, action) {
     return {
-        schedule: schedule(state.schedule, action),
-        salonServices: salonServices(state.salonServices, action),
-        persons: persons(state.persons, action),
-        workshifts: workshifts(state.workshifts, action),
+        schedule: updateSchedule(state.schedule, action),
+        salonServices: updateSalonServices(state.salonServices, action),
+        persons: updatePersons(state.persons, action),
+        workshifts: updateWorkshifts(state.workshifts, action),
+		currentModal: setCurrentModal(state.currentModal, action),
         //todos: todos(state.todos, action),
     }
 }
