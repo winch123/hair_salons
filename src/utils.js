@@ -21,8 +21,12 @@ const store = createStore(mainReduser, window.__REDUX_DEVTOOLS_EXTENSION__ && wi
 
 export {store}
 
+export function dispatch(type, value) {
+	store.dispatch({type, value})
+}
+
 const apiRequest = function(url, params={}) {
-    params = Object.assign(params, {salonId: 2})
+    params = Object.assign(params, {salonId: store.getState().salon.id})
     return new Promise(function(resolve, reject) {
         api.get(url, {
             params,
@@ -33,20 +37,21 @@ const apiRequest = function(url, params={}) {
             },
         })
         .then(res => {
-			//console.log(url, res.status)
-            if (res.data.actions) {
-                for (let action of res.data.actions ) {
-                    //store.dispatch({ type: 'UPDATE_SCHEDULE_SHIFTS', value:{[id]: res.data[id], }})
+			//console.log(url, res.status, res)
+			const data = res.data || {}
+            if (data.actions) {
+                for (let action of data.actions ) {
+                    //store.dispatch({ type: 'UPDATE_SCHEDULE_SHIFTS', value:{[id]: data[id], }})
                     store.dispatch({type: action.type, value: action.value})
                 }
             }
-            if (res.data.redirect) {
-                apiRequest(res.data.redirect.url, res.data.redirect.params || null)
+            if (data.redirect) {
+                apiRequest(data.redirect.url, data.redirect.params || null)
             }
-			if (res.data.message) {
+			if (data.message) {
 				notification.open({
-					message: res.data.message.title,
-					description: res.data.message.text,
+					message: data.message.title,
+					description: data.message.text,
 					onClick: () => {
 					console.log('Notification Clicked!')
 					},
@@ -55,17 +60,16 @@ const apiRequest = function(url, params={}) {
 						info: <InfoCircleOutlined style={{ color: '#108ee9' }} />,
 						ok: <CheckCircleOutlined style={{ color: 'green' }} />,
 						warning: <WarningOutlined style={{ color: 'red' }} />,
-					}[res.data.message.iconType],
+					}[data.message.iconType],
 					style: {backgroundColor: 'Cornsilk'},
 				})
 			}
 
-            resolve(res.data)
+            resolve(data)
         })
 		.catch(error => {
-			//console.log(url)
-			//console.log(error)
-			console.log(error.response)
+			console.log('error', url, error)
+			//console.log(error.response)
 			//console.log(error.request)
 			//console.log(error.message)
 			if (error.response && error.response.status === 403) {

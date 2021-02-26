@@ -51,6 +51,15 @@ function updateWorkshifts(state = {}, act) {
     return state
 }
 
+function setSalon(state = {}, act) {
+	let newState = Object.assign({}, state)
+	if (act.type === 'SET_SALON') {
+		newState = act.value
+		return newState;
+	}
+	return state
+}
+
 function setCurrentModal(state = null, act) {
 	let newState = Object.assign({}, state)
 	if (act.type === 'SET_CURRENT_MODAL') {
@@ -98,6 +107,7 @@ function mainReducer(state = {}, action) {
         salonServices: updateSalonServices(state.salonServices, action),
         persons: updatePersons(state.persons, action),
         workshifts: updateWorkshifts(state.workshifts, action),
+		salon: setSalon(state.salon, action),
 		currentModal: setCurrentModal(state.currentModal, action),
         //todos: todos(state.todos, action),
     }
