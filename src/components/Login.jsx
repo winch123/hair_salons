@@ -1,56 +1,36 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-// import {userLoginFetch} from '../redux/actions';
 
-import {apiRequest} from "../utils.js"
-import SetPassword from "./SetPassword"
+import {apiRequest, dispatch} from "../utils.js"
 
-import { Input, Button } from 'antd'
+import {Input, Button, message, Spin} from 'antd'
 import { LockOutlined } from '@ant-design/icons'
 import MaskedInput from 'antd-mask-input'
 
 class Login extends Component {
 	state = {
-		username: "",
-		password: "",
 		loginButtonDisabled: true,
-		smsButtonDisabled: true,
 		modeSendSms: false,
 		PhoneImputDisabled: false,
 		Phone: "",
+		isWaitingLogin: false,
 	}
 
 	constructor(props) {
 		super(props)
 		this.smsCodeInput = React.createRef()
+		this.passwordInput = React.createRef()
 	}
 
-  handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
-  }
-
-  handleSubmit = event => {
-    event.preventDefault()
-    //this.props.userLoginFetch(this.state)
-    apiRequest('login', {
-      email: this.state.username,
-      password: this.state.password,
-    }).then(res => {
-      if (res.token) {
-        localStorage.setItem("token", res.token)
-		this.props.history.replace('/')
-      }
-    })
-  }
-
-	PhoneChange = e => {
+	onPhoneChange = e => {
 		let p = e.target.value.replace(/[^\d\+]/g, '')
 		let buttons_disabled = p.length < 12
+		if (!buttons_disabled && this.state.loginButtonDisabled) {
+			// если ввели последнюю решающую цифру, переводим фокус
+			this.passwordInput.focus()
+		}
 		this.setState({
 			loginButtonDisabled: buttons_disabled,
-			smsButtonDisabled: buttons_disabled,
 			Phone: p,
 		})
 	}
@@ -76,7 +56,38 @@ class Login extends Component {
 			smsCode: this.smsCodeInput.state.value,
 		})
 		.then(res => {
-			console.log(res)
+			//console.log(res)
+			if (res.token) {
+				localStorage.setItem("token", res.token)
+				dispatch('SET_CURRENT_MODAL', {
+					content:'ModalSetPassword',
+					contentProps: {showNickname: true},
+				})
+				this.props.history.replace('/SelectSalon')
+			}
+		})
+	}
+
+	doLogin = e => {
+		this.setState({isWaitingLogin:true})
+		apiRequest('login', {
+			email: this.state.Phone,
+			password: this.passwordInput.state.value,
+		})
+		.then(res => {
+			this.setState({isWaitingLogin:false})
+			if (res.token) {
+				localStorage.setItem("token", res.token)
+				this.props.history.push('/SelectSalon')
+			}
+			else {
+				message.error('Ошибка логина')
+				this.passwordInput.focus()
+			}
+		})
+		.catch(error => {
+			//console.log(error)
+			this.setState({isWaitingLogin:false})
 		})
 	}
 
@@ -84,15 +95,13 @@ class Login extends Component {
 		return (
 			<div style={{maxWidth:'444px', margin:'0 auto',}}>
 
-                <SetPassword />
-
 				<div>
 					<label>
 						Телефон:
 						<MaskedInput
 							mask="+7 (111) 111-11-11"
 							//size="5"
-							onChange={this.PhoneChange}
+							onChange={this.onPhoneChange}
 							disabled={this.state.PhoneImputDisabled}
 						/>
 					</label>
@@ -103,13 +112,22 @@ class Login extends Component {
 								size="large"
 								placeholder="input password"
 								prefix={<LockOutlined />}
+								ref = {input => this.passwordInput = input}
 							/>
 						</label>
 						<br/>
 						<br/>
-						<Button type="primary" block disabled={this.state.loginButtonDisabled}>
-							Воход в личный кабинет.
-						</Button>
+
+						<Spin size="large" spinning={this.state.isWaitingLogin}>
+							<Button
+								type="primary" block
+								disabled={this.state.loginButtonDisabled}
+								onClick = {this.doLogin}
+							>
+								Войти в личный кабинет.
+							</Button>
+						</Spin>
+
 						<br/>
 						<br/>
 						<Button block onClick={this.ShowSmsSender}>
@@ -119,7 +137,7 @@ class Login extends Component {
 					<div style={{display: this.state.modeSendSms ? 'block' : 'none'}}>
 						<br/>
 						<Button danger onClick={this.SendSms}
-							disabled={this.state.smsButtonDisabled}
+							disabled={this.state.loginButtonDisabled}
 						>
 							Отправить СМС код.
 						</Button>
@@ -137,6 +155,8 @@ class Login extends Component {
 				<br/>
 				<br/>
 				<hr/>
+
+
 				<form onSubmit={this.handleSubmit}>
 					<h1>Login</h1>
 

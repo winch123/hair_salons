@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Menu} from 'antd'
 import { MailOutlined, AppstoreOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 
-import {store} from "../utils.js"
+import {dispatch, apiRequest, history} from "../utils.js"
 
 const { SubMenu } = Menu
 
@@ -19,11 +19,22 @@ export default class MainMenu extends Component {
 	handleClick = e => {
 		//console.log('click ', e)
 		this.setState({ current: e.key })
-		if (e.key == 'password:1') {
-			store.dispatch({type: 'SET_CURRENT_MODAL', value: 'ModalSetPassword'})
+		if (e.key === 'user:password') {
+			dispatch('SET_CURRENT_MODAL', {
+				content:'ModalSetPassword',
+				contentProps: {showNickname: true},
+			})
 		}
-		if (e.key == 'setting:3') {
-			store.dispatch({type: 'SET_CURRENT_MODAL', value: null})
+		if (e.key === 'user:exit') {
+			apiRequest('logout', {})
+			.then(res => {
+				console.log('logout', res)
+				history.push('/Login')
+			})
+		}
+
+		if (e.key === 'setting:3') {
+			dispatch('SET_CURRENT_MODAL', null)
 		}
 	}
 
@@ -39,7 +50,8 @@ export default class MainMenu extends Component {
 				</Menu.Item>
 				<SubMenu key="SubMenu"  title="Пользователь" icon={<UserOutlined />} >
 					<Menu.ItemGroup title="Item 1">
-						<Menu.Item key="password:1">сменить пароль</Menu.Item>
+						<Menu.Item key="user:password">Сменить пароль</Menu.Item>
+						<Menu.Item key="user:exit">Выйти</Menu.Item>
 					</Menu.ItemGroup>
 					<Menu.ItemGroup title="Item 2">
 						<Menu.Item key="setting:3">Option 3</Menu.Item>
