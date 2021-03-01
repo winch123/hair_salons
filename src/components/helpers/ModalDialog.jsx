@@ -19,15 +19,21 @@ class ModalDialog extends Component {
 	}
 
 	getComponent = () => {
+		if (!this.props.currentModal) return
+
 		const CommonProps = {
 			init: (params) => {
 					this.setState(params)
 			},
 			closeDialog: this.onCloseDialog,
+			...this.props.currentModal.contentProps
 		}
-		switch (this.props.currentModal) {
+
+		switch (this.props.currentModal.content) {
 			case 'ModalSetPassword':
 				return <ModalSetPassword {...CommonProps} />
+			default:
+				return null
 		}
 	}
 

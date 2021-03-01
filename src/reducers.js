@@ -60,6 +60,15 @@ function setSalon(state = {}, act) {
 	return state
 }
 
+function setUser(state = {}, act) {
+	let newState = Object.assign({}, state)
+	if (act.type === 'SET_USER') {
+		newState = act.value
+		return newState;
+	}
+	return state
+}
+
 function setCurrentModal(state = null, act) {
 	let newState = Object.assign({}, state)
 	if (act.type === 'SET_CURRENT_MODAL') {
@@ -104,10 +113,11 @@ const mainReducer = combineReducers({
 function mainReducer(state = {}, action) {
     return {
         schedule: updateSchedule(state.schedule, action),
+		salon: setSalon(state.salon, action),
         salonServices: updateSalonServices(state.salonServices, action),
         persons: updatePersons(state.persons, action),
         workshifts: updateWorkshifts(state.workshifts, action),
-		salon: setSalon(state.salon, action),
+		user: setUser(state.user, action),
 		currentModal: setCurrentModal(state.currentModal, action),
         //todos: todos(state.todos, action),
     }

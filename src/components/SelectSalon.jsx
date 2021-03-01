@@ -46,15 +46,18 @@ export default class SelectSalon extends Component {
 		// console.log('ModalSetPassword --- componentDidMount')
 		apiRequest('get_my_salons', {})
 		.then(res => {
-			console.log(res)
-			this.setState({mySalons: res.salons})
+			//console.log(res)
+			if (res.salons) {
+				this.setState({mySalons: res.salons})
+			}
 		})
+		// .catch(error => console.error(error))
 	}
 
 	AddMeToSalon(firmId) {
 		apiRequest('add_me_to_salon', {firmId})
 		.then(res => {
-			console.log(res)
+			//console.log(res)
 			this.updateMySalons()
 		})
 	}
@@ -70,7 +73,10 @@ export default class SelectSalon extends Component {
 								{salon.myRoles.length == 0
 									? 'ожидаем'
 									: <button
-										onClick={e => dispatch('SET_SALON', salon)}
+										onClick={e => {
+											localStorage.setItem('currentSalonId', salon.id)
+											this.props.history.push('/schedule')
+										}}
 										>перейти</button>}
 							</span>
 							{salon.name}

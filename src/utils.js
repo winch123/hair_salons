@@ -26,7 +26,7 @@ export function dispatch(type, value) {
 }
 
 const apiRequest = function(url, params={}) {
-    params = Object.assign(params, {salonId: store.getState().salon.id})
+    params = Object.assign(params, {salonId: localStorage.getItem('currentSalonId')})
     return new Promise(function(resolve, reject) {
         api.get(url, {
             params,
@@ -76,7 +76,8 @@ const apiRequest = function(url, params={}) {
 				history.push('/login')
 				resolve(error)
 			}
-			reject(error)
+			//reject(error)
+			// TODO: надо решить, какие ошибки есть смысл отдавать конечным потребителям. 
 		})
     })
 }

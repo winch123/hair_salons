@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
-import {Form, Input, Button} from 'antd'
-import {apiRequest} from "../../utils.js"
+import {connect} from 'react-redux'
+import {Form, Input, Button, Tooltip} from 'antd'
+import {QuestionCircleOutlined} from '@ant-design/icons'
+import {apiRequest, dispatch} from "../../utils.js"
 
 const formItemLayout = {
   labelCol: {
@@ -26,7 +28,7 @@ const tailFormItemLayout = {
   },
 }
 
-export default class ModalSetPassword extends Component {
+class ModalSetPassword extends Component {
 	state = {
 	}
 
@@ -47,11 +49,11 @@ export default class ModalSetPassword extends Component {
 
 	onFinish = (values: any) => {
 		console.log('Received values of form: ', values)
-		apiRequest('set_password', {
-			new_password: values.password,
-		})
+
+		apiRequest('set_password', values)
 		.then(res => {
 			console.log(res)
+			dispatch('SET_USER', res.user)
 			this.props.closeDialog()
 		})
 	}
@@ -69,6 +71,25 @@ export default class ModalSetPassword extends Component {
 				}}
 				scrollToFirstError
 			>
+				{this.props.showNickname && <Form.Item
+					name="nickname"
+					label={
+						<span>
+							Ваше имя&nbsp;
+							<Tooltip title="Только русские буквы">
+								<QuestionCircleOutlined />
+							</Tooltip>
+						</span>
+					}
+					rules={[{
+						required: true,
+						message: 'Please input your nickname!',
+						whitespace: true,
+					}]}
+				>
+					<Input defaultValue={this.props.user.name} />
+				</Form.Item>}
+
 				<Form.Item
 					name="password"
 					label="Password"
@@ -113,10 +134,14 @@ export default class ModalSetPassword extends Component {
 
 				<Form.Item {...tailFormItemLayout}>
 					<Button type="primary" htmlType="submit">
-						установить новый пароль
+						Сохранить данные
 					</Button>
 				</Form.Item>
 			</Form>
 		)
 	}
 }
+
+export default  connect(
+	(storeState) => Object.assign({}, {user: storeState.user,})
+)(ModalSetPassword)
