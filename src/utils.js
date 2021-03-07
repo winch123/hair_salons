@@ -9,10 +9,13 @@ import { createBrowserHistory } from 'history'
 const history = createBrowserHistory()
 export {history}
 
+//  console.log(process.env.NODE_ENV)
+
 let api = axios.create({
   // baseURL: "http://hair-salons.local/salon/",
   //baseURL: "http://hair-salons.local/api/",
-  baseURL: "https://hs.local/api/",
+  //baseURL: "https://hs.local/api/",
+  baseURL: process.env.REACT_APP_API_URL,
   responseType: "json"
 });
 
