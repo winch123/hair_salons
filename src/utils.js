@@ -72,7 +72,7 @@ const apiRequest = function(url, params={}) {
 			//console.log(error.response)
 			//console.log(error.request)
 			//console.log(error.message)
-			if (error.response && [403,401].indexOf(error.response.status) > -1) {
+			if (error.response && [401].indexOf(error.response.status) > -1) {
 				history.push('/login')
 				resolve(error)
 			}
