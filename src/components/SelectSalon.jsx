@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import {Input} from 'antd'
+import {Input, Tooltip} from 'antd'
+import {ClockCircleTwoTone, LoginOutlined} from '@ant-design/icons'
 
 //import {debounce} from 'lodash/fp'
 //import * as _ from 'lodash'
@@ -69,15 +70,23 @@ export default class SelectSalon extends Component {
 				<ul>
 					{this.state.mySalons.map(salon => (
 						<li key={salon.id}>
-							<span style={{display:'inline-block', width:'111px',}}>
+							<span style={{display:'inline-block', width:'122px',}}>
 								{salon.myRoles.length == 0
-									? 'ожидаем'
+									? <Tooltip placement="topLeft" title='Ожидание решения от администратора салона.'>
+										<ClockCircleTwoTone
+											twoToneColor="#eb2f96"
+											style={{fontSize: "20px"}}
+										/>
+									</Tooltip>
 									: <button
 										onClick={e => {
 											localStorage.setItem('currentSalonId', salon.id)
 											this.props.history.push('/schedule')
 										}}
-										>перейти</button>}
+									>
+										<LoginOutlined style={{fontSize: "18px"}}/>
+										&nbsp; Войти
+									</button>}
 							</span>
 							{salon.name}
 						</li>

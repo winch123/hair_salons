@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import {apiRequest, dispatch} from "../utils.js"
 
 export default class BaseComponent extends Component {
 
@@ -62,5 +63,13 @@ export default class BaseComponent extends Component {
 
       this.setState({[rootName]: ss})
   }
+
+	updateSalonServices () {
+		apiRequest('get-salon-services-list')
+		.then(res => {
+			//console.log(res)
+			dispatch('UPDATE_SALON_SERVICES', res)
+		})
+	}
 
 }

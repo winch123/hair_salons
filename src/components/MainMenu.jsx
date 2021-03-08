@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
-import {Menu} from 'antd'
-import { MailOutlined, AppstoreOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
+import {Link} from 'react-router-dom'
+import {Menu, Affix, PageHeader, Badge, Avatar} from 'antd'
+import {MailOutlined, AppstoreOutlined, SettingOutlined, GlobalOutlined, UserOutlined} from '@ant-design/icons'
 
 import {dispatch, apiRequest, history} from "../utils.js"
+import MySalonActiveRequests from './MySalonActiveRequests'
 
 const { SubMenu } = Menu
 
@@ -33,14 +35,15 @@ export default class MainMenu extends Component {
 			})
 		}
 
-		if (e.key === 'setting:3') {
-			dispatch('SET_CURRENT_MODAL', null)
+		if (e.key === 'mail') {
+			history.push('/schedule')
 		}
 	}
 
 
 	render() {
 		return (
+		<>
 			<Menu onClick={this.handleClick} selectedKeys={[this.current]} mode="horizontal">
 				<Menu.Item key="mail" icon={<MailOutlined />}>
 					Navigation One
@@ -55,7 +58,9 @@ export default class MainMenu extends Component {
 					</Menu.ItemGroup>
 					<Menu.ItemGroup title="Item 2">
 						<Menu.Item key="setting:3">Option 3</Menu.Item>
-						<Menu.Item key="setting:4">Option 4</Menu.Item>
+						<Menu.Item key="setting:4">
+							<Link to="/settings">Настройки салона 2</Link>
+						</Menu.Item>
 					</Menu.ItemGroup>
 				</SubMenu>
 				<Menu.Item key="settings" icon={<SettingOutlined />}>
@@ -64,6 +69,34 @@ export default class MainMenu extends Component {
 					</a>
 				</Menu.Item>
 			</Menu>
+
+			<Affix offsetTop={0} style={{width:'100%'}}>
+				<PageHeader
+					style={{background:'#eee', boxShadow: '7px 7px 25px #000' }}
+					ghost={true}
+					onBack={() => window.history.back()}
+					title = "Titlegg"
+					subTitle="This is a subtitle"
+					extra={[
+					<>
+						<MySalonActiveRequests/>
+						<Avatar.Group>
+							<Avatar size="large" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+							<Badge count={17}>
+								<Avatar
+									style={{color: '#f56a00', backgroundColor: '#fde3cf' }} 
+									icon={<GlobalOutlined />}
+									shape="square" size="large"
+									placement="top"
+								/>
+							</Badge>
+						</Avatar.Group>
+					</>
+					]}
+				>
+				</PageHeader>
+			</Affix>
+		</>
 		)
 	}
 }

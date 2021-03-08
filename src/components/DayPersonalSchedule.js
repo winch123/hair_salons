@@ -82,13 +82,13 @@ class DayPersonalSchedule extends Component {
         const schedule = this.props.DaySchedule.schedule
         const DurationShiftMinutes = Number(this.props.DaySchedule.DurationShiftMinutes)
         const BeginShiftMinutes = Number(this.props.DaySchedule.BeginShiftMinutes)
+		const master_id = this.props.DaySchedule.master_id
 
         let sch1 = this.formatSchedule(schedule, DurationShiftMinutes)
-        //console.log(this.props.DaySchedule);
 
         return (
             <div>
-                <h2>{this.props.persons[this.props.DaySchedule.master_id].name}  рассписание на </h2>
+                <h2>{this.props.persons[master_id].name}  рассписание на </h2>
                 {sch1.map((d, index) => (
                     <div key={index} className="DaySchedule-interval" onClick={this.onIntervalClick.bind(this, d.begin, d.duration, d.s_type)}>
                         <div>
