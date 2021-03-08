@@ -20,7 +20,7 @@ export default class CreateShift extends BaseComponent {
 
     return (<div>
 
-	<Modal title="Создание смены"
+			<Modal title = {"Создание смены на " + moment(this.props.selectedDate).format('D MMM Y')}
 	    visible={this.props.visible}
 	    onOk={() => {
 	      apiRequest('create-workshift', {
@@ -37,9 +37,6 @@ export default class CreateShift extends BaseComponent {
 	    okButtonProps={{disabled: !this.state.timeBegin || !this.state.timeEnd }}
 	>
 
-	  CreateShift
-	  <RangePicker defaultValue={moment('12:05', format)} format={format} minuteStep={5} size="large" />
-	  <br/>
 	  начало: <TimePicker
 	    defaultValue={moment('07:00', format)}
 	    format={format}
@@ -49,7 +46,8 @@ export default class CreateShift extends BaseComponent {
 	    onChange={val => this.setState( {timeBegin: val.format(format)} )}
 	    style={{width:'120px'}}
 	  />
-	  конец: <TimePicker
+
+			&emsp; конец: <TimePicker
 	    defaultValue={moment('12:10', format)}
 	    format={format}
 	    minuteStep={10}
@@ -58,9 +56,6 @@ export default class CreateShift extends BaseComponent {
 	    onChange={val => this.setState( {timeEnd: val.format(format)} )}
 	    style={{width:'120px'}}
 	  />
-
-	  <br/>
-	  <div>{this.state.timeBegin}</div>
 
 	</Modal>
 

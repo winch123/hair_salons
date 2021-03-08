@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom'
 import BaseComponent from './BaseComponent.js'
 
 import {apiRequest, store} from "../utils.js";
@@ -23,9 +24,10 @@ class CommonSchedule extends BaseComponent {
     };
 
     componentDidMount() {
+		this.updateSalonServices()
       this.UpdateWorkshifts()
       setTimeout(() => {
-	this.myRef.current.scrollLeft = 100
+	//this.myRef.current.scrollLeft = 100
       }, 500)
     }
 
@@ -44,8 +46,8 @@ class CommonSchedule extends BaseComponent {
         })
     }
 
-    onSelectWorkshift(shiftId, masterId, dayId) {
-        //console.info(shiftId, masterId, dayId);
+	onSelectWorkshift(masterId, dayId) {
+		let shiftId = this.props.workshifts[dayId].masters[masterId].shift_id
         apiRequest('schedule-get', {shiftId})
 
         this.setState({
@@ -68,8 +70,10 @@ class CommonSchedule extends BaseComponent {
 
     render() {
         let {workshifts} = this.props
+
         return (
             <div style={{userSelect: 'none'}}>
+				<Link to="/settings">настройки</Link>
 		<CreateShift
 		    visible = {this.state.createShiftButtonVisible}
 		    onClose = {(result) => {
@@ -115,11 +119,13 @@ class CommonSchedule extends BaseComponent {
 					    <td key={selDate} style={{}}>
 						{ workshifts[selDate].masters[master.id] &&
 							<div
-								onClick = {() => this.onSelectWorkshift(workshifts[selDate].masters[master.id].shift_id, master.id, selDate)}
+								onClick = {() => this.onSelectWorkshift(master.id, selDate)}
 								className = {classNames('CommonSchedule-Shift',
 								this.state.currentShiftId === workshifts[selDate].masters[master.id].shift_id  ? 'CommonSchedule-ShiftActive' : '')}
 							>
-								<div style={{fontSize:'1.1em', width:'155px'}}>{workshifts[selDate].masters[master.id].text}</div>
+								<div style={{fontSize:'1.1em', width:'155px'}}>
+									{workshifts[selDate].masters[master.id].text}
+								</div>
 								<div style={{fontSize:'0.8em'}}  dangerouslySetInnerHTML={{__html: workshifts[selDate].masters[master.id].description}} />
 							</div>
 						||
