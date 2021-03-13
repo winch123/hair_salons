@@ -8,6 +8,7 @@ import ModalDialog from './components/helpers/ModalDialog'
 import {store, apiRequest, history} from './utils'
 import MainMenu from './components/MainMenu'
 import SelectSalon from './components/SelectSalon'
+import PersonnelManagement from './components/PersonnelManagement'
 
 //import AddServiceDialog from './components/AddServiceDialog';
 import CommonSchedule from './components/CommonSchedule';
@@ -31,6 +32,7 @@ export default function App() {
 				<Switch>
 					<PrivateRoute path='/schedule' component={CommonSchedule} />
 					<PrivateRoute path='/SelectSalon' component={SelectSalon} />
+					<PrivateRoute path='/PersonnelManagement' component={PersonnelManagement} />
 					<Route path='/settings' component={SalonSettings} />
 					<Route path='/Login' component={Login} />
 					<Route path='/test' component={test} />

@@ -113,7 +113,7 @@ class CommonSchedule extends BaseComponent {
 				</tr>
 				</thead>
 				<tbody>
-				{Object.values(this.props.persons).map((master) => (
+				{this.props.persons.map(master => (
 					<tr key={master.id} className='CommonSchedule-rowMaster'>
 					{Object.keys(workshifts).map((selDate) => (
 					    <td key={selDate} style={{}}>
@@ -176,7 +176,7 @@ export default  connect(
         return {
             schedule: storeState.schedule,
             workshifts: storeState.workshifts,
-	    persons: storeState.persons,
+			persons: Object.values(storeState.persons).filter(p => p.roles.ordinary),
         }
     },
     (dispatch) => {

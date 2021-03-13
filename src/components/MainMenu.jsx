@@ -57,7 +57,9 @@ export default class MainMenu extends Component {
 						<Menu.Item key="user:exit">Выйти</Menu.Item>
 					</Menu.ItemGroup>
 					<Menu.ItemGroup title="Item 2">
-						<Menu.Item key="setting:3">Option 3</Menu.Item>
+						<Menu.Item key="setting:3">
+							<Link to="/PersonnelManagement">Сотрудники</Link>
+						</Menu.Item>
 						<Menu.Item key="setting:4">
 							<Link to="/settings">Настройки салона 2</Link>
 						</Menu.Item>
