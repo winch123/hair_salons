@@ -22,6 +22,11 @@ function updateSalonServices(state = {}, act) {
         }
         return newState;
     }
+	if (act.type === 'UPDATE_ONE_SALON_SERVICE') {
+		newState[act.value.parent_service].services[act.value.id] = act.value
+		return newState
+	}
+
     return state
 }
 

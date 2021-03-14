@@ -44,20 +44,18 @@ class AddServiceDialog extends Component {
        }
     }
 
+	saveServiceInShedule = () => {
+		apiRequest('schedule-add-service', {
+			shiftId: this.props.currentShiftId,
+			serviceId: this.state.selectedServiceId,
+			beginTime: this.state.fromTime,
+			endTime: this.state.toTime,
+			comment: this.state.textComment,
+		})
+		this.props.onClose()
+	}
+
     render() {
-        const saveServiceInShedule = () => {
-            apiRequest('schedule-add-service', {
-                shiftId: this.props.currentShiftId,
-                serviceId: this.state.selectedServiceId,
-                beginTime: this.state.fromTime,
-                endTime: this.state.toTime,
-                comment: this.state.textComment,
-            })
-            this.props.onClose()
-        };
-
-        //console.log(Object.entries(this.props.salonServices))
-
         return (
             <div style={{overflowX:'hidden'}} >
                 <label>
@@ -80,7 +78,9 @@ class AddServiceDialog extends Component {
 		      {Object.entries(this.props.salonServices).map(([catId, cat]) => (
 			[<ListSubheader key={catId}> {cat.name}</ListSubheader>,
 
-			  Object.entries(cat.services).map(([servId, serv]) => (
+			Object.entries(cat.services)
+				.filter(([servId, serv]) => serv.masters[this.props.masterId])
+				.map(([servId, serv]) => (
 			    <MenuItem value={catId + '-' + servId} key={servId} >
 			      {serv.duration_default} мин - {serv.name}
 			    </MenuItem>
@@ -111,7 +111,7 @@ class AddServiceDialog extends Component {
                     />
                 </div>
 
-                <Button autoFocus onClick={saveServiceInShedule} color="primary" variant="contained">
+                <Button autoFocus onClick={this.saveServiceInShedule} color="primary" variant="contained">
                     Save
                 </Button>
 

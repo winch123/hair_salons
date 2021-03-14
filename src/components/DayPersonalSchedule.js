@@ -125,6 +125,7 @@ class DayPersonalSchedule extends Component {
                         beginTime = {this.state.IntervalSelector_beginTime}
                         endTime = {this.state.IntervalSelector_endTime}
                         currentShiftId = {this.props.currentShiftId}
+						masterId = {master_id}
                     />
                 </Dialog>
             </div>

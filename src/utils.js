@@ -28,9 +28,10 @@ export function dispatch(type, value) {
 	store.dispatch({type, value})
 }
 
-const apiRequest = function(url, params={}) {
-    params = Object.assign(params, {salonId: localStorage.getItem('currentSalonId')})
+const apiRequest = function(url, params={}, config={}) {
+    //params = Object.assign(params, {salonId: localStorage.getItem('currentSalonId')})
     return new Promise(function(resolve, reject) {
+		/*
         api.get(url, {
             params,
             headers: {
@@ -39,6 +40,24 @@ const apiRequest = function(url, params={}) {
               Authorization: 'Bearer ' + localStorage.getItem("token") || null,
             },
         })
+		*/
+		let fmData = new FormData()
+		//fmData.append('salonId', localStorage.getItem('currentSalonId'))
+		for (const k in params) {
+			fmData.append(k, params[k])
+		}
+		axios({
+			method: 'post',
+			url: process.env.REACT_APP_API_URL + url,
+			params: {salonId: localStorage.getItem('currentSalonId')},
+			data: fmData,
+			headers: {
+				'Test-Header': 'test-value',
+				Accept: 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem("token") || null,
+			},
+			config,
+		})
         .then(res => {
 			//console.log(url, res.status, res)
 			const data = res.data || {}
