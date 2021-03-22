@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import BaseComponent from './BaseComponent.js'
+import BaseComponent from './BaseComponent'
+import SalonServiceEditForm from './SalonServiceEditForm'
 
 import { /*SaveTwoTone,*/ RemoveCircleTwoTone, ExpandMore } from '@material-ui/icons'
 import TextField from '@material-ui/core/TextField';
@@ -11,13 +12,9 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 
 import {scroller} from 'react-scroll'
-import salonCss from './salon.css'
 
 import {apiRequest, dispatch, store} from "../utils.js"
-import UploaderTest from './UploaderTest'
-import {InputNumber, Select} from 'antd'
-const {Option} = Select
-
+import {Select} from 'antd'
 
 class SalonSettings extends BaseComponent {
     constructor(props) {
@@ -110,78 +107,6 @@ class SalonSettings extends BaseComponent {
 		})
 	}
 	
-	editServiceForm(serviceId, service) {
-		const intervals = {
-			10: '10 мин',
-			20: '20 мин',
-			30: '30 мин',
-			40: '40 мин',
-			50: '50 мин',
-			60: '1 час',
-			80: '1 час 20 мин',
-			90: '1 час 30 мин',
-			100: '1 час 40 мин',
-			120: '2 часа',
-			150: '2 часа 30 мин',
-			180: '3 часа',
-		}
-		
-		return <>
-			<b style={{display:'inline-block', width:'202px'}}>{service.name}</b>
-			<div style={{}}>
-				<div className = {salonCss.service}>
-					цена:
-					<InputNumber
-						defaultValue = {100}
-						formatter = {value => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-						parser = {value => value.replace(/\$\s?|(,*)/g, '')}
-						onChange = {value => console.log('changed', value)}
-					/>
-					<br/>
-					продолжительность:
-					<Select size='large' defaultValue={20}
-						onChange={e => console.log(e)}
-						style={{ width: 200 }}
-					>
-						{Object.entries(intervals).map(([minutes,text]) => 
-							<Option key={minutes}>{text}</Option>
-						)}
-					</Select>
-
-				</div>
-
-				<UploaderTest
-					style={{float:'right'}}
-					objId = {service.id}
-					objType = 'masters_services'
-					fileList = {(service.images || []).map(img => {
-						return {
-							url: 'https://hs.local' + img.preview,
-							standard: 'https://hs.local' + img.standard,
-						}
-					})}
-					afterUpdate = {() => this.ReloadSalonService(service.id)}
-				/>
-			</div>
-		</>
-		
-		return (<>
-			<ul>
-
-			{Object.entries(service.masters || {}).map(([k1, master]) => (
-				<li key={k1}>
-					<span style={{display:'inline-block', width:'122px'}}>
-						{master.name}
-					</span>
-					<RemoveCircleTwoTone
-						style={{marginBottom:'-5px', cursor:'pointer'}}
-						onClick={(event) => this.RemoveMaster(event, serviceId, k1) }  />
-				</li>
-			))}
-			</ul>
-		</>)
-	}
-
     render() {
         let {salonServices} = this.props
         const filter = createFilterOptions()
@@ -192,6 +117,7 @@ class SalonSettings extends BaseComponent {
                 <Autocomplete
                     style={{margin:'33px'}}
                     options={Object.values(this.state.AllServices)}
+                    groupBy={(option) => option.category_name}
                     groupBy={(option) => option.category_name}
                     getOptionLabel={(option) => typeof option == 'object' ? option.name : option}
                     autoComplete
@@ -270,11 +196,14 @@ class SalonSettings extends BaseComponent {
                             {Object.entries(cat.services || {}).map(([serviceId, service]) => (
                                 <li key={serviceId} name={'service'+serviceId}>
 									{this.state.expService === serviceId
-										? this.editServiceForm(serviceId, service)
+										? <SalonServiceEditForm 
+											service = {service}
+											ReloadSalonService = {this.ReloadSalonService}
+										/>
 										: <button 
 											style={{width:'277px'}}
 											onClick={e => this.setState({expService:serviceId})}  
-											>{service.name}</button>
+										>{service.name}</button>
 									}
                                 </li>
                             ))}

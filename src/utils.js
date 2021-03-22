@@ -44,7 +44,22 @@ const apiRequest = function(url, params={}, config={}) {
 		let fmData = new FormData()
 		//fmData.append('salonId', localStorage.getItem('currentSalonId'))
 		for (const k in params) {
-			fmData.append(k, params[k])
+			let element = params[k]
+			// console.log(k, element, typeof element)
+			if (element) {
+				if (typeof element === 'object') {
+					for (let i = 0; i < element.length; i++) {
+						fmData.append(k+'[]', element[i])
+					}
+					//fmData.append(k+'[]', ...element)
+				}
+				else {
+					fmData.append(k, element)
+				}
+			}
+			//else {
+			//	fmData.append(k, null)
+			//}
 		}
 		axios({
 			method: 'post',
