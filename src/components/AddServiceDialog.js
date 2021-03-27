@@ -79,7 +79,7 @@ class AddServiceDialog extends Component {
 			[<ListSubheader key={catId}> {cat.name}</ListSubheader>,
 
 			Object.entries(cat.services)
-				.filter(([servId, serv]) => serv.masters[this.props.masterId])
+				.filter(([servId, serv]) => (serv.masters || [])[this.props.masterId])
 				.map(([servId, serv]) => (
 			    <MenuItem value={catId + '-' + servId} key={servId} >
 			      {serv.duration_default} мин - {serv.name}

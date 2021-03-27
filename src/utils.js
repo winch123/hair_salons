@@ -46,20 +46,14 @@ const apiRequest = function(url, params={}, config={}) {
 		for (const k in params) {
 			let element = params[k]
 			// console.log(k, element, typeof element)
-			if (element) {
-				if (typeof element === 'object') {
-					for (let i = 0; i < element.length; i++) {
-						fmData.append(k+'[]', element[i])
-					}
-					//fmData.append(k+'[]', ...element)
-				}
-				else {
-					fmData.append(k, element)
+			if (Array.isArray(element)) {
+				for (let i = 0; i < element.length; i++) {
+					fmData.append(k+'[]', element[i])
 				}
 			}
-			//else {
-			//	fmData.append(k, null)
-			//}
+			else {
+				fmData.append(k, element)
+			}
 		}
 		axios({
 			method: 'post',

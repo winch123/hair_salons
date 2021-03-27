@@ -3,11 +3,12 @@ import {connect} from 'react-redux'
 
 import {apiRequest, dispatch} from '../utils.js'
 import UploaderTest from './UploaderTest'
+import BaseComponent from './BaseComponent'
 import {InputNumber, Select, Button, Form} from 'antd'
 const {Option} = Select
 
 
-class SalonServiceEditForm extends React.Component {
+class SalonServiceEditForm extends BaseComponent {
 	state = {
 		saveButtonDisabled: true,
 	}
@@ -55,7 +56,7 @@ class SalonServiceEditForm extends React.Component {
 		console.log(service.masters, Object.keys(service.masters || {}).map(Number))
 
 		return <>
-			<b style={{display:'inline-block', width:'202px'}}>
+			<b style={{display:'inline-block', width:'202px', color:'red', padding:'11px'}}>
 				{service.name}
 			</b>
 			<div style={{display:'flex', flexDirection:'row', justifyContent:'center', margin:'11px'}}>

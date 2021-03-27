@@ -23,7 +23,11 @@ function updateSalonServices(state = {}, act) {
         return newState;
     }
 	if (act.type === 'UPDATE_ONE_SALON_SERVICE') {
-		newState[act.value.parent_service].services[act.value.id] = act.value
+		//const service = act.value[act.value.id]
+		//console.info(act.value, service)
+		const service = act.value[Object.keys(act.value)[0]]
+		//console.info(act.value, service)
+		newState[service.parent_service].services[service.id] = service
 		return newState
 	}
 

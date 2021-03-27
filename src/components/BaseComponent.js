@@ -72,4 +72,13 @@ export default class BaseComponent extends Component {
 		})
 	}
 
+	ReloadSalonService = (serviceId) => {
+		//console.log('ReloadSalonService', serviceId)
+		apiRequest('get-salon-services-list', {serviceId})
+		.then(res => {
+			//console.log(res)
+			dispatch('UPDATE_ONE_SALON_SERVICE', res)
+		})
+	}
+
 }

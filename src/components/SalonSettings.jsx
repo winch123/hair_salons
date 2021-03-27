@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import classNames from 'classnames'
 import BaseComponent from './BaseComponent'
 import SalonServiceEditForm from './SalonServiceEditForm'
 
@@ -14,7 +15,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import {scroller} from 'react-scroll'
 
 import {apiRequest, dispatch, store} from "../utils.js"
-import {Select} from 'antd'
+import {Select,Popover,Button} from 'antd'
 
 class SalonSettings extends BaseComponent {
     constructor(props) {
@@ -27,7 +28,7 @@ class SalonSettings extends BaseComponent {
             AllServices: {},
             AllCategories: {},
             CurrentForSave: {
-              catId: 0,
+              catId: null,
               serviceId: null,
               serviceName: null,
             },
@@ -35,7 +36,10 @@ class SalonSettings extends BaseComponent {
             CurrentCatSelectOpen: false,
             expCategory: 1,
 			expService: null,
+			createServiceFormVisible: false,
         }
+		this.ButtonCreateService = React.createRef()
+		this.refSelectCreatedCategory = React.createRef()
     }
 
     componentDidMount() {
@@ -76,18 +80,24 @@ class SalonSettings extends BaseComponent {
         this.setState({expCategory: (this.state.expCategory === exp ? null : String(exp))})
     }
 
-    SaveBattonClick = () => {
-		//console.log(salonCss)
-		//return
-		
-      apiRequest('save-salon-service', this.state.CurrentForSave)
+    SaveButtonClick = () => {
+      apiRequest('create_salon_service', this.state.CurrentForSave)
       .then(res => {
-          store.dispatch({
-            type: 'UPDATE_SALON_SERVICES',
-            value: res.servicesBaranch,
-          })
+			console.log(res)
+			dispatch('UPDATE_ONE_SALON_SERVICE', res.servicesBranch)
+			this.setState({
+				createServiceFormVisible: false,
+				CurrentForSave: {
+					catId: null,
+					serviceId: null,
+					serviceName: null,
+				},
+				expService: res.salonServiceId,
+			}, () => {
+				console.log(this.state)
+			})
+			this.setExpandedCategory(res.categoryId)
 
-          this.setExpandedCategory(res.categoryId)
           scroller.scrollTo('service' + res.serviceId, {
             duration: 1500,
             delay: 100,
@@ -98,22 +108,56 @@ class SalonSettings extends BaseComponent {
        })
     }
 
-	ReloadSalonService = (serviceId) => {
-		//console.log('ReloadSalonService', serviceId)
-		apiRequest('get-salon-services-list', {serviceId})
-		.then(res => {
-			console.log(res)
-			dispatch('UPDATE_ONE_SALON_SERVICE', res)
-		})
+	handleFormVisibleChange = visible => {
+		console.log('handleFormVisibleChange', visible)
+		this.setState({createServiceFormVisible: visible})
 	}
-	
+
     render() {
         let {salonServices} = this.props
         const filter = createFilterOptions()
-        //console.log('render', this.state.SalonServicesParams)
+		const {CurrentForSave} = this.state
+		//console.log({createServiceFormVisible: this.state.createServiceFormVisible})
+
+		const createServiceForm = (
+			<div className='create-service-form'>
+				<div><b>{CurrentForSave.serviceName}</b></div>
+				В разделе:
+				<Select
+					className = "class-tst111"
+					ref = {this.refSelectCreatedCategory}
+					//ref = {element => this.selCC = element}
+					onSelect = {(val) => {
+						console.log(val)
+						this.setStateA(['CurrentForSave','catId'], val)
+						this.ButtonCreateService.current.focus()
+					}}
+					style = {{width:'222px'}}
+					onFocus = {() => this.setState({CurrentCatSelectOpen: true})}
+					onBlur = {() => this.setState({CurrentCatSelectOpen: false})}
+
+					value={CurrentForSave.catId}
+					open={this.state.CurrentCatSelectOpen}
+					//onClose={() => this.setState({CurrentCatSelectOpen: false})}
+					//onOpen={() => this.setState({CurrentCatSelectOpen: true})}
+					disabled={this.state.CurrentCatSelectDisabled}
+				>
+					{Object.values(this.state.AllCategories).map((cat) => (
+						<MenuItem value={cat.id} key={cat.id} >{cat.name} </MenuItem>
+					))}
+				</Select>
+				<Button onClick={this.SaveButtonClick}
+					ref = {this.ButtonCreateService}
+					disabled = {!CurrentForSave.serviceId && !(CurrentForSave.catId && CurrentForSave.serviceName)}
+				>
+					сохранить
+				</Button>
+			</div>
+		)
 
         return (
-            <div>
+            <div className="salon-settings">
+				<div className="create-service">
                 <Autocomplete
                     style={{margin:'33px'}}
                     options={Object.values(this.state.AllServices)}
@@ -135,18 +179,20 @@ class SalonSettings extends BaseComponent {
                                   serviceName: newValue.name,
                               },
                               CurrentCatSelectDisabled: true,
+								createServiceFormVisible: true,
                           })
                       }
                       if (typeof newValue === 'string') {
-                          this.setState({
-                              CurrentForSave: {
-                                  catId: '',
-                                  serviceId: null,
-                                  serviceName: newValue,
-                              },
-                              CurrentCatSelectDisabled: false,
-                          })
-                      this.setState({CurrentCatSelectOpen: true})
+							this.setState({
+								CurrentForSave: {
+									catId: null,
+									serviceId: null,
+									serviceName: newValue,
+								},
+								CurrentCatSelectDisabled: false,
+								createServiceFormVisible: true,
+							})
+							setTimeout(() => this.refSelectCreatedCategory.current.focus(), 0)
                       }
 
                     }}
@@ -164,28 +210,26 @@ class SalonSettings extends BaseComponent {
                             return filtered;
                         }}
                 />
-                <div>
-                    <span>{this.state.CurrentForSave.serviceName}</span>
-                    <Select
-                        onChange={(ev) => this.setStateA(['CurrentForSave','catId'], ev.target.value)}
-                        value={this.state.CurrentForSave.catId}
-                        open={this.state.CurrentCatSelectOpen}
-                        onClose={() => this.setState({CurrentCatSelectOpen: false})}
-                        onOpen={() => this.setState({CurrentCatSelectOpen: true})}
-                        disabled={this.state.CurrentCatSelectDisabled}
-                    >
-	                    {Object.values(this.state.AllCategories).map((cat) => (
-	                        <MenuItem value={cat.id} key={cat.id} >{cat.name} </MenuItem>
-	                    ))}
-                    </Select>
-                    <button onClick={this.SaveBattonClick}>сохранить</button>
-                </div>
 
+					<Popover
+						content={createServiceForm}
+						title="Будет создана услуга"
+						visible = {this.state.createServiceFormVisible }
+						onVisibleChange = {this.handleFormVisibleChange}
+						placement = "bottomLeft"
+						trigger = "click"
+					>
+						<br/>
+					</Popover>
+
+				</div>
+				<hr/>
+				<br/>
                 <ul>
                 {Object.entries(salonServices || {}).map(([catId, cat]) => (
 
                     <Accordion key={catId}
-                      expanded={this.state.expCategory === catId}
+                      expanded={this.state.expCategory == catId}
                       onChange={ () => this.setExpandedCategory(catId)}
                     >
                         <AccordionSummary  style={{background:'#eee'}} expandIcon={<ExpandMore />}>
@@ -195,14 +239,14 @@ class SalonSettings extends BaseComponent {
                             <ul>
                             {Object.entries(cat.services || {}).map(([serviceId, service]) => (
                                 <li key={serviceId} name={'service'+serviceId}>
-									{this.state.expService === serviceId
+									{this.state.expService == serviceId
 										? <SalonServiceEditForm 
 											service = {service}
 											ReloadSalonService = {this.ReloadSalonService}
 										/>
 										: <button 
 											style={{width:'277px'}}
-											onClick={e => this.setState({expService:serviceId})}  
+											onClick={e => this.setState({expService:serviceId})}
 										>{service.name}</button>
 									}
                                 </li>
