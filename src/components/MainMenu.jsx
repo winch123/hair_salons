@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {Menu, Affix, PageHeader, Badge, Avatar} from 'antd'
-import {MailOutlined, AppstoreOutlined, SettingOutlined, GlobalOutlined, UserOutlined} from '@ant-design/icons'
+import {MailOutlined, AppstoreOutlined, SettingOutlined, GlobalOutlined, UserOutlined, TeamOutlined} from '@ant-design/icons'
 
 import {dispatch, apiRequest, history} from "../utils.js"
 import MySalonActiveRequests from './MySalonActiveRequests'
@@ -9,7 +10,7 @@ import MySalonActiveRequests from './MySalonActiveRequests'
 const { SubMenu } = Menu
 
 
-export default class MainMenu extends Component {
+class MainMenu extends Component {
 	state = {
 		current: 'mail',
 	}
@@ -81,17 +82,21 @@ export default class MainMenu extends Component {
 					subTitle="This is a subtitle"
 					extra={[
 					<>
-						<MySalonActiveRequests/>
+						<div  style={{border:'solid blue 1px', position:'absolute', left:'33%', top:'10%', background:'white', padding:'11px', borderRadius:'11px'}}>
+							<MySalonActiveRequests />
+						</div>
 						<Avatar.Group>
 							<Avatar size="large" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-							<Badge count={17}>
-								<Avatar
-									style={{color: '#f56a00', backgroundColor: '#fde3cf' }} 
-									icon={<GlobalOutlined />}
-									shape="square" size="large"
-									placement="top"
-								/>
-							</Badge>
+							<Link to="/PersonnelManagement">
+								<Badge count={Object.values(this.props.persons).filter(p => p.roles.admin).length}>
+									<Avatar
+										style={{color: '#f56a00', backgroundColor: '#fde3cf' }}
+										icon={<TeamOutlined />}
+										shape="round" size="large"
+										placement="top"
+									/>
+								</Badge>
+							</Link>
 						</Avatar.Group>
 					</>
 					]}
@@ -102,3 +107,10 @@ export default class MainMenu extends Component {
 		)
 	}
 }
+export default  connect(
+	(storeState) => {
+		return {
+			persons: storeState.persons,
+		}
+	}
+)(MainMenu)

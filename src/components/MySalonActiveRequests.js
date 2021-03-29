@@ -39,16 +39,16 @@ class MySalonActiveRequests extends BaseComponent {
     answer = (serviceRequest, answer, shiftId) => {
 		console.log(serviceRequest.id, answer)
 
-		apiRequest('/set_my_response', {serviceRequestId: serviceRequest.id, shiftId: shiftId})
+		apiRequest('set_my_response', {serviceRequestId: serviceRequest.id, shiftId: shiftId})
 		.then( r => {
-
+			apiRequest('schedule-get', {shiftId})
 		})
 		this.deleteFromState(['activeRequestsList', serviceRequest.id])
 		serviceRequest.title = 'угуу '
     }
 
     mumumu = () => {
-      apiRequest('/get_my_salon_services_active_requests')
+      apiRequest('get_my_salon_services_active_requests')
       .then( r => {
 	//console.log(r.activeRequests)
 	this.setState({activeRequestsList: r.activeRequests})
@@ -61,14 +61,14 @@ class MySalonActiveRequests extends BaseComponent {
 	const popoverContent = (serviceRequest) => (<div>
 			{Object.entries(serviceRequest.vacancyInShifts).map(([shiftId, shiftData]) => (
 				<div key={shiftId}>
-					{shiftData.can_be_shoved &&
-						<Button type="primary" size="small"
-							icon={<CheckCircleOutlined />}
-							onClick={() => this.answer(serviceRequest, 'yes', shiftId)}
-						>
-						</Button>
-					}
-					{this.props.persons[shiftData.masterId].name}
+					<Button type="primary" size="small"
+						disabled = {!shiftData.can_be_shoved}
+						style = {{width:'111px', textAlign:'left'}}
+						icon={<CheckCircleOutlined />}
+						onClick={() => this.answer(serviceRequest, 'yes', shiftId)}
+					>
+						{this.props.persons[shiftData.masterId].name}
+					</Button>
 				</div>
 			))}
 
@@ -80,7 +80,7 @@ class MySalonActiveRequests extends BaseComponent {
 			</Button>
 	</div>);
 
-      return (<div>
+      return (<>
 	  <button onClick={this.mumumu}>mu</button>
 
 	  <div>
@@ -96,13 +96,13 @@ class MySalonActiveRequests extends BaseComponent {
 		      format={percent => `${Math.round(percent / this.state.k)} s`}
 		    />
 
-		    {request.desired_time} {request.service_name}
+			{request.desired_time} <b>{request.service_name}</b> ({request.duration_default}мин)
 		</Popover>
 	      </div>
 	    ))}
 	  </div>
 
-      </div>)
+      </>)
 
     }
 }
