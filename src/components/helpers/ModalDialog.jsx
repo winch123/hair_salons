@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {store} from "../../utils.js"
+import {dispatch} from "../../utils.js"
 import {Modal} from 'antd'
 
 import ModalSetPassword from "../modals/SetPasswordModal"
@@ -15,7 +15,10 @@ class ModalDialog extends Component {
 	}
 
 	onCloseDialog = e => {
-		store.dispatch({type: 'SET_CURRENT_MODAL', value: null})
+		if (!this.props.currentModal.closingDisabled) {
+			// закрываем, если не было настройки, запрещающей закрытие.
+			dispatch('SET_CURRENT_MODAL', null)
+		}
 	}
 
 	getComponent = () => {
@@ -23,9 +26,13 @@ class ModalDialog extends Component {
 
 		const CommonProps = {
 			init: (params) => {
-					this.setState(params)
+				// Устанавливаем состояние, заданное дочерним компонентом
+				this.setState(params)
 			},
-			closeDialog: this.onCloseDialog,
+			// здесь закрытие без проверки настройки, запрещающей закрытие.
+			closeDialog: () => dispatch('SET_CURRENT_MODAL', null),
+
+			// прокидываем в дочерний комонент параметры из redux.
 			...this.props.currentModal.contentProps
 		}
 
@@ -48,6 +55,9 @@ class ModalDialog extends Component {
 				}}
 				onCancel={this.onCloseDialog}
 				okButtonProps={{disabled: true}}
+				cancelButtonProps={{
+					disabled: this.props.currentModal && this.props.currentModal.closingDisabled
+				}}
 			>
 				{component}
 			</Modal>

@@ -61,7 +61,11 @@ class Login extends Component {
 				localStorage.setItem("token", res.token)
 				dispatch('SET_CURRENT_MODAL', {
 					content:'ModalSetPassword',
-					contentProps: {showNickname: true},
+					contentProps: {
+						showNickname: true,
+						title: "Пожалуйста задайте имя и пароль.",
+					},
+					closingDisabled: true,
 				})
 				this.props.history.replace('/SelectSalon')
 			}

@@ -35,7 +35,7 @@ class ModalSetPassword extends Component {
 	constructor(props) {
 		super(props)
 		this.props.init({
-			title: 'Смена пароля',
+			title: this.props.title || 'Смена пароля',
 		})
 	}
 
@@ -48,7 +48,7 @@ class ModalSetPassword extends Component {
 	}
 
 	onFinish = (values: any) => {
-		console.log('Received values of form: ', values)
+		//console.log('Received values of form: ', values)
 
 		apiRequest('set_password', values)
 		.then(res => {
