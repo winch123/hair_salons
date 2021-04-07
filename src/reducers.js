@@ -15,21 +15,24 @@ function updateSchedule(state = {}, act) {
 function updateSalonServices(state = {}, act) {
     let newState = Object.assign({}, state)
     if (act.type === 'UPDATE_SALON_SERVICES') {
-        for (let key in act.value) {
-            //console.log(key, act.value[key])
-            act.value[key].updated = new Date()
-            newState[key] = act.value[key]
+		let t = new Date()
+		for (let cat_key in act.value) {
+			let cat = act.value[cat_key]
+			//console.log(key, act.value[key])
+			if (newState[cat_key]) {
+				for (let key in cat.services) {
+					let serv = cat.services[key]
+					serv.updated = t
+					newState[cat_key].services[key] = serv
+				}
+			}
+			else {
+				cat.updated = t
+				newState[cat_key] = cat
+			}
         }
         return newState;
     }
-	if (act.type === 'UPDATE_ONE_SALON_SERVICE') {
-		//const service = act.value[act.value.id]
-		//console.info(act.value, service)
-		const service = act.value[Object.keys(act.value)[0]]
-		//console.info(act.value, service)
-		newState[service.parent_service].services[service.id] = service
-		return newState
-	}
 
     return state
 }
@@ -122,7 +125,7 @@ const mainReducer = combineReducers({
 function mainReducer(state = {}, action) {
     return {
         schedule: updateSchedule(state.schedule, action),
-		salon: setSalon(state.salon, action),
+		//salon: setSalon(state.salon, action),
         salonServices: updateSalonServices(state.salonServices, action),
         persons: updatePersons(state.persons, action),
         workshifts: updateWorkshifts(state.workshifts, action),

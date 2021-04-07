@@ -84,7 +84,7 @@ class SalonSettings extends BaseComponent {
       apiRequest('create_salon_service', this.state.CurrentForSave)
       .then(res => {
 			console.log(res)
-			dispatch('UPDATE_ONE_SALON_SERVICE', res.servicesBranch)
+			dispatch('UPDATE_SALON_SERVICES', res.servicesBranch)
 			this.setState({
 				createServiceFormVisible: false,
 				CurrentForSave: {
@@ -242,7 +242,6 @@ class SalonSettings extends BaseComponent {
 									{this.state.expService == serviceId
 										? <SalonServiceEditForm 
 											service = {service}
-											ReloadSalonService = {this.ReloadSalonService}
 										/>
 										: <button 
 											style={{width:'277px'}}

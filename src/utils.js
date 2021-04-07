@@ -51,7 +51,8 @@ const apiRequest = function(url, params={}, config={}) {
 					fmData.append(k+'[]', element[i])
 				}
 			}
-			else {
+			else if (typeof element !== 'undefined') {
+				// Пустые значения не отправляем вообще. Правильно ли???
 				fmData.append(k, element)
 			}
 		}

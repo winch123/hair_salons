@@ -99,6 +99,7 @@ class DayPersonalSchedule extends Component {
                             { d.s_type !== 'free' &&
                                 <button onClick={this.delScheduleService.bind(this, d.begin)}> (X) {d.begin}</button>
                             }
+							<div>{d.comment}</div>
                         </div>
                         {Array(d.duration - 1).fill(null).map((d2, ind2) => (
                             <div key={ind2} style={{height:'3px'}}>

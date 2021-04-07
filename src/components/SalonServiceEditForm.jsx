@@ -26,7 +26,7 @@ class SalonServiceEditForm extends BaseComponent {
 		})
 		.then(res => {
 			console.log('updated')
-			this.props.ReloadSalonService(this.props.service.id)
+			this.updateSalonServices(this.props.service.id)
 			this.setState({saveButtonDisabled: true})
 		})
 	}
@@ -53,7 +53,6 @@ class SalonServiceEditForm extends BaseComponent {
 		}
 		
 		let service = this.props.service
-		console.log(service.masters, Object.keys(service.masters || {}).map(Number))
 
 		return <>
 			<b style={{display:'inline-block', width:'202px', color:'red', padding:'11px'}}>

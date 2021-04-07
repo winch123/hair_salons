@@ -34,11 +34,6 @@ class CommonSchedule extends BaseComponent {
     UpdateWorkshifts() {
         apiRequest('actual-workshifts-get')
         .then(res => {
-            //console.log(res);
-	    store.dispatch({
-	      type: 'UPDATE_PERSONS',
-	      value: res.persons,
-	    })
 	    store.dispatch({
 	      type: 'UPDATE_WORKSHIFTS',
 	      value: res.workshifts,

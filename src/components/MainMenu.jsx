@@ -80,15 +80,16 @@ class MainMenu extends Component {
 					onBack={() => window.history.back()}
 					title = "Titlegg"
 					subTitle="This is a subtitle"
-					extra={[
-					<>
+					extra={<>
 						<div  style={{border:'solid blue 1px', position:'absolute', left:'33%', top:'10%', background:'white', padding:'11px', borderRadius:'11px'}}>
 							<MySalonActiveRequests />
 						</div>
 						<Avatar.Group>
 							<Avatar size="large" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
 							<Link to="/PersonnelManagement">
-								<Badge count={Object.values(this.props.persons).filter(p => p.roles.admin).length}>
+								<Badge
+									count = {Object.values(this.props.persons).filter(p => p.roles.requested).length}
+								>
 									<Avatar
 										style={{color: '#f56a00', backgroundColor: '#fde3cf' }}
 										icon={<TeamOutlined />}
@@ -98,8 +99,7 @@ class MainMenu extends Component {
 								</Badge>
 							</Link>
 						</Avatar.Group>
-					</>
-					]}
+					</>}
 				>
 				</PageHeader>
 			</Affix>

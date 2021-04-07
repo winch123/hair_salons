@@ -64,20 +64,12 @@ export default class BaseComponent extends Component {
       this.setState({[rootName]: ss})
   }
 
-	updateSalonServices () {
-		apiRequest('get-salon-services-list')
-		.then(res => {
-			//console.log(res)
-			dispatch('UPDATE_SALON_SERVICES', res)
-		})
-	}
-
-	ReloadSalonService = (serviceId) => {
-		//console.log('ReloadSalonService', serviceId)
+	updateSalonServices (serviceId) {
 		apiRequest('get-salon-services-list', {serviceId})
 		.then(res => {
 			//console.log(res)
-			dispatch('UPDATE_ONE_SALON_SERVICE', res)
+			dispatch('UPDATE_SALON_SERVICES', res.services)
+			dispatch('UPDATE_PERSONS', res.persons)
 		})
 	}
 
