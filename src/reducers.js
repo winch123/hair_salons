@@ -63,9 +63,9 @@ function updateWorkshifts(state = {}, act) {
     return state
 }
 
-function setSalon(state = {}, act) {
+function updateMySalons(state = {}, act) {
 	let newState = Object.assign({}, state)
-	if (act.type === 'SET_SALON') {
+	if (act.type === 'UPDATE_MY_SALONS') {
 		newState = act.value
 		return newState;
 	}
@@ -125,12 +125,12 @@ const mainReducer = combineReducers({
 function mainReducer(state = {}, action) {
     return {
         schedule: updateSchedule(state.schedule, action),
-		//salon: setSalon(state.salon, action),
         salonServices: updateSalonServices(state.salonServices, action),
         persons: updatePersons(state.persons, action),
         workshifts: updateWorkshifts(state.workshifts, action),
 		user: setUser(state.user, action),
 		currentModal: setCurrentModal(state.currentModal, action),
+		mySalons: updateMySalons(state.mySalons, action),
         //todos: todos(state.todos, action),
     }
 }

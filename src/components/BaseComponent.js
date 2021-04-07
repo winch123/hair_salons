@@ -73,4 +73,13 @@ export default class BaseComponent extends Component {
 		})
 	}
 
+	updateMySalons() {
+		apiRequest('get_my_salons', {})
+		.then(res => {
+			if (res.salons) {
+				dispatch("UPDATE_MY_SALONS", res.salons)
+			}
+		})
+	}
+
 }

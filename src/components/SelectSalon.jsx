@@ -1,4 +1,5 @@
-import React, {Component} from 'react'
+import React from 'react'
+import {connect} from 'react-redux'
 import {Input, Tooltip} from 'antd'
 import {ClockCircleTwoTone, LoginOutlined} from '@ant-design/icons'
 
@@ -6,27 +7,23 @@ import {ClockCircleTwoTone, LoginOutlined} from '@ant-design/icons'
 //import * as _ from 'lodash'
 //import debounce from 'lodash.debounce';
 
-import {apiRequest, store, dispatch} from "../utils.js"
+import BaseComponent from './BaseComponent'
+import {apiRequest, dispatch} from "../utils.js"
 
-export default class SelectSalon extends Component {
+class SelectSalon extends BaseComponent {
 	state = {
 		firmsList: [],
-		mySalons: [],
 	}
 
 	constructor(props) {
 		super(props)
 	}
 
-	componentDidMount() {
-		this.updateMySalons()
-	}
-
 	ttt = null
 	FindSalonsByStreet(e) {
 		clearTimeout(this.ttt)
 		e.persist()
-		console.log(e.target.value)
+		//console.log(e.target.value)
 		this.ttt = setTimeout(() => {
 			if (e.target.value.length > 1) {
 				apiRequest('find_salons_by_street_name', {
@@ -43,18 +40,6 @@ export default class SelectSalon extends Component {
 		}, 1000)
 	}
 
-	updateMySalons() {
-		// console.log('ModalSetPassword --- componentDidMount')
-		apiRequest('get_my_salons', {})
-		.then(res => {
-			//console.log(res)
-			if (res.salons) {
-				this.setState({mySalons: res.salons})
-			}
-		})
-		// .catch(error => console.error(error))
-	}
-
 	AddMeToSalon(firmId) {
 		apiRequest('add_me_to_salon', {firmId})
 		.then(res => {
@@ -68,7 +53,7 @@ export default class SelectSalon extends Component {
 			<>
 				<h3>Мои салоны</h3>
 				<ul>
-					{this.state.mySalons.map(salon => (
+					{Object.values(this.props.mySalons).map(salon => (
 						<li key={salon.id}>
 							<span style={{display:'inline-block', width:'122px',}}>
 								{salon.myRoles.length == 0
@@ -117,3 +102,11 @@ export default class SelectSalon extends Component {
 		)
 	}
 }
+
+export default  connect(
+    (storeState) => {
+        return {
+          mySalons: storeState.mySalons,
+        }
+    }
+)(SelectSalon)

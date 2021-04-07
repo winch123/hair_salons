@@ -1,22 +1,27 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {Menu, Affix, PageHeader, Badge, Avatar} from 'antd'
 import {MailOutlined, AppstoreOutlined, SettingOutlined, GlobalOutlined, UserOutlined, TeamOutlined} from '@ant-design/icons'
 
+import BaseComponent from './BaseComponent'
 import {dispatch, apiRequest, history} from "../utils.js"
 import MySalonActiveRequests from './MySalonActiveRequests'
 
 const { SubMenu } = Menu
 
 
-class MainMenu extends Component {
+class MainMenu extends BaseComponent {
 	state = {
 		current: 'mail',
 	}
 
 	constructor(props) {
 		super(props)
+	}
+
+	componentDidMount() {
+		this.updateMySalons()
 	}
 
 	handleClick = e => {
@@ -43,6 +48,8 @@ class MainMenu extends Component {
 
 
 	render() {
+		let currentSalonId = localStorage.getItem('currentSalonId')
+
 		return (
 		<>
 			<Menu onClick={this.handleClick} selectedKeys={[this.current]} mode="horizontal">
@@ -79,7 +86,7 @@ class MainMenu extends Component {
 					ghost={true}
 					onBack={() => window.history.back()}
 					title = "Titlegg"
-					subTitle="This is a subtitle"
+					subTitle = {this.props.mySalons[currentSalonId] && this.props.mySalons[currentSalonId].name}
 					extra={<>
 						<div  style={{border:'solid blue 1px', position:'absolute', left:'33%', top:'10%', background:'white', padding:'11px', borderRadius:'11px'}}>
 							<MySalonActiveRequests />
@@ -111,6 +118,7 @@ export default  connect(
 	(storeState) => {
 		return {
 			persons: storeState.persons,
+			mySalons: storeState.mySalons,
 		}
 	}
 )(MainMenu)
