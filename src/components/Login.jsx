@@ -156,39 +156,6 @@ class Login extends Component {
 						</Button>
 					</div>
 				</div>
-				<br/>
-				<br/>
-				<hr/>
-
-
-				<form onSubmit={this.handleSubmit}>
-					<h1>Login</h1>
-
-					<label>
-					  Username
-					  <input
-						name='username'
-						placeholder='Username'
-						value={this.state.username}
-						onChange={this.handleChange}
-						/>
-					</label>
-					<br/>
-
-					<label>
-					  Password
-					  <input
-						type='password'
-						name='password'
-						placeholder='Password'
-						value={this.state.password}
-						onChange={this.handleChange}
-						/>
-					</label>
-					<br/>
-
-					<input type='submit'/>
-				</form>
 			</div>
 		)
 	}

@@ -32,7 +32,7 @@ class SalonServiceEditForm extends BaseComponent {
 	}
 	
 	changeFormElement(t, val) {
-		console.log(t, val)
+		//console.log(t, val)
 		this.setState({saveButtonDisabled: false})
 	}
 
@@ -116,11 +116,11 @@ class SalonServiceEditForm extends BaseComponent {
 					objType = 'masters_services'
 					fileList = {(service.images || []).map(img => {
 						return {
-							url: 'https://hs.local' + img.preview,
-							standard: 'https://hs.local' + img.standard,
+							url: process.env.REACT_APP_SERVER_URL + img.preview,
+							standard: process.env.REACT_APP_SERVER_URL + img.standard,
 						}
 					})}
-					afterUpdate = {() => this.ReloadSalonService(service.id)}
+					afterUpdate = {() => this.updateSalonServices(service.id)}
 				/>
 			</div>
 		</>

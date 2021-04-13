@@ -47,7 +47,7 @@ class AddServiceDialog extends Component {
 	saveServiceInShedule = () => {
 		apiRequest('schedule-add-service', {
 			shiftId: this.props.currentShiftId,
-			serviceId: this.state.selectedServiceId,
+			serviceId:  this.state.selectedServiceId,
 			beginTime: this.state.fromTime,
 			endTime: this.state.toTime,
 			comment: this.state.textComment,
@@ -81,7 +81,7 @@ class AddServiceDialog extends Component {
 			Object.entries(cat.services)
 				.filter(([servId, serv]) => (serv.masters || [])[this.props.masterId])
 				.map(([servId, serv]) => (
-			    <MenuItem value={catId + '-' + servId} key={servId} >
+			    <MenuItem value={catId + '-' + serv.service_id} key={serv.service_id} >
 			      {serv.duration_default} мин - {serv.name}
 			    </MenuItem>
 			  ))
