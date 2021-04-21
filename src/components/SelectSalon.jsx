@@ -66,7 +66,7 @@ class SelectSalon extends BaseComponent {
 									: <button
 										onClick={e => {
 											localStorage.setItem('currentSalonId', salon.id)
-											this.props.history.push('/schedule')
+											this.props.history.push('/salon')
 										}}
 									>
 										<LoginOutlined style={{fontSize: "18px"}}/>

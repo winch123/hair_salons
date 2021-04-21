@@ -9,6 +9,7 @@ import {store, apiRequest, history} from './utils'
 import MainMenu from './components/MainMenu'
 import SelectSalon from './components/SelectSalon'
 import PersonnelManagement from './components/PersonnelManagement'
+import SalonTabs from './components/SalonTabs'
 
 //import AddServiceDialog from './components/AddServiceDialog';
 import CommonSchedule from './components/CommonSchedule';
@@ -36,6 +37,7 @@ export default function App() {
 					<Route path='/settings' component={SalonSettings} />
 					<Route path='/Login' component={Login} />
 					<Route path='/test' component={test} />
+					<PrivateRoute path='/salon' component={SalonTabs} />
 					<Redirect from='/' to='/SelectSalon'/>
 				</Switch>
 			</Router>
