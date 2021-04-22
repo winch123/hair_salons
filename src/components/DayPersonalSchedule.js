@@ -87,12 +87,12 @@ class DayPersonalSchedule extends Component {
         let sch1 = this.formatSchedule(schedule, DurationShiftMinutes)
 
         return (
-            <div>
+            <div className="DayPersonalSchedule">
                 <h2>{this.props.persons[master_id].name}  рассписание на </h2>
                 {sch1.map((d, index) => (
-                    <div key={index} className="DaySchedule-interval" onClick={this.onIntervalClick.bind(this, d.begin, d.duration, d.s_type)}>
+                    <div key={index} className="interval" onClick={this.onIntervalClick.bind(this, d.begin, d.duration, d.s_type)}>
                         <div>
-                            <span className="DaySchedule-timePoint">
+                            <span className="timePoint">
                                 {this.getTimeFromMins(BeginShiftMinutes + d.begin)}
                             </span>
                             {d.duration}min {d.s_type} {d.text}
@@ -104,13 +104,13 @@ class DayPersonalSchedule extends Component {
                         {Array(d.duration - 1).fill(null).map((d2, ind2) => (
                             <div key={ind2} style={{height:'3px'}}>
                                 { (BeginShiftMinutes + d.begin + ind2 + 1) % 15 === 0 &&
-                                    <span className="DaySchedule-timePoint"> {this.getTimeFromMins(BeginShiftMinutes + d.begin + ind2 + 1)} </span>
+                                    <span className="timePoint"> {this.getTimeFromMins(BeginShiftMinutes + d.begin + ind2 + 1)} </span>
                                 }
                                 &nbsp;
                             </div>
                         ))}
                         { index+1 === sch1.length &&
-                            <span className="DaySchedule-timePoint">
+                            <span className="timePoint">
                                 {this.getTimeFromMins(BeginShiftMinutes + DurationShiftMinutes)}
                             </span>
                         }

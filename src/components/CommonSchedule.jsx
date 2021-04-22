@@ -67,7 +67,7 @@ class CommonSchedule extends BaseComponent {
         let {workshifts} = this.props
 
         return (
-            <div style={{userSelect: 'none'}}>
+            <div style={{userSelect: 'none'}} className='CommonSchedule'>
 				<Link to="/settings">настройки</Link>
 		<CreateShift
 		    visible = {this.state.createShiftButtonVisible}
@@ -83,11 +83,11 @@ class CommonSchedule extends BaseComponent {
 
 		<table style={{float:'left'}}>
 			<thead>
-				<tr className='CommonSchedule-rowDate' />
+				<tr className='rowDate' />
 			</thead>
 			<tbody>
 			{Object.values(this.props.persons).map((master) => (
-				<tr key={master.id} className='CommonSchedule-rowMaster'>
+				<tr key={master.id} className='rowMaster'>
 					<td>{master.name}</td>
 				</tr>
 			))}
@@ -101,7 +101,7 @@ class CommonSchedule extends BaseComponent {
 		>
 			<table style={{marginLeft:'100px'}}>
 				<thead>
-				<tr className='CommonSchedule-rowDate'>
+				<tr className='rowDate'>
 				{Object.keys(workshifts).map((k1) => (
 					<th key={k1}>{workshifts[k1].caption}</th>
 				))}
@@ -109,14 +109,14 @@ class CommonSchedule extends BaseComponent {
 				</thead>
 				<tbody>
 				{this.props.persons.map(master => (
-					<tr key={master.id} className='CommonSchedule-rowMaster'>
+					<tr key={master.id} className='rowMaster'>
 					{Object.keys(workshifts).map((selDate) => (
 					    <td key={selDate} style={{}}>
 						{ workshifts[selDate].masters[master.id] &&
 							<div
 								onClick = {() => this.onSelectWorkshift(master.id, selDate)}
-								className = {classNames('CommonSchedule-Shift',
-								this.state.currentShiftId === workshifts[selDate].masters[master.id].shift_id  ? 'CommonSchedule-ShiftActive' : '')}
+								className = {classNames('Shift',
+								this.state.currentShiftId === workshifts[selDate].masters[master.id].shift_id  ? 'ShiftActive' : '')}
 							>
 								<div style={{fontSize:'1.1em', width:'155px'}}>
 									{workshifts[selDate].masters[master.id].text}

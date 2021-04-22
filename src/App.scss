@@ -34,37 +34,49 @@
 
 /**********************************************************/
 
-.CommonSchedule-Shift {
+.UserPopoverMenu {
+    li {
+        color: MidnightBlue;
+        cursor: pointer;
+        padding: 0 11px;
+        font-weight: bold;
+        &:hover {
+            background: #eee;
+        }
+    }
+}
+
+.CommonSchedule{
+    .Shift {
 		cursor: pointer;
 		border: solid 1px;
 		padding: 5px;
-}
-.CommonSchedule-Shift:hover {
-	background: #ECF6CE;
-}
-.CommonSchedule-ShiftActive {
-    color: red;
-}
-
-.CommonSchedule-rowDate {
-	height: 22px;
-	text-align: center;
-}
-.CommonSchedule-rowMaster {
-	height: 66px;
-}
-
-
-.DaySchedule-interval {
-    border: solid 1px;
-    margin: 1px 77px;
+        &:hover {
+            background: #ECF6CE;
+        }
+    }
+    .ShiftActive {
+        color: red;
+    }
+    .rowDate {
+        height: 22px;
+        text-align: center;
+    }
+    .rowMaster {
+        height: 66px;
+    }
 }
 
-.DaySchedule-timePoint {
-    margin-left: -55px;
-    margin-right: 55px;
+.DayPersonalSchedule{
+    .interval {
+        border: solid 1px;
+        margin: 1px 77px;
+    }
+    .timePoint {
+        margin-left: -55px;
+        margin-right: 55px;
+    }
 }
-
 
 #time-contaner {
     display: flex;

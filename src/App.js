@@ -16,7 +16,7 @@ import CommonSchedule from './components/CommonSchedule';
 import SalonSettings from './components/SalonSettings';
 import Login from './components/Login';
 import test from './components/test';
-import './App.css';
+import './App.scss';
 
 export default function App() {
   //const history = createBrowserHistory()

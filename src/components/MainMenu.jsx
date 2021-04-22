@@ -10,11 +10,6 @@ import MySalonActiveRequests from './MySalonActiveRequests'
 
 const { SubMenu } = Menu
 
-const styleOfUserLinks = {
-	cursor: 'pointer',
-	color: 'green',
-}
-
 class MainMenu extends BaseComponent {
 	state = {
 		showMenuOfUser: false,
@@ -64,8 +59,8 @@ class MainMenu extends BaseComponent {
 		let currentSalonId = localStorage.getItem('currentSalonId')
 
 		return (
-		<>
-			<Affix offsetTop={0} style={{width:'100%'}}>
+		<div className="MainMenu" style={{width:'100%'}}>
+			<Affix offsetTop={0}>
 				<PageHeader
 					style={{background:'#eee', boxShadow: '7px 7px 25px #000' }}
 					ghost={true}
@@ -83,16 +78,15 @@ class MainMenu extends BaseComponent {
 							<MySalonActiveRequests />
 						</div>
 						<Avatar.Group>
-							<Popover content={<>
-									<div style={styleOfUserLinks} 
-										onClick={this.showSetPasswordDialog}>
+							<Popover
+								content={<div className="UserPopoverMenu">
+									<li onClick={this.showSetPasswordDialog}>
 										Сменить пароль
-									</div>
-									<div style={styleOfUserLinks}
-										onClick={this.userLogout}>
+									</li>
+									<li onClick={this.userLogout}>
 										Выйти
-									</div>
-								</>}
+									</li>
+								</div>}
 								placement="bottomRight" trigger="click"
 								visible = {this.state.showMenuOfUser}
 								onVisibleChange = {visible => this.setState({showMenuOfUser: visible})}
@@ -111,7 +105,7 @@ class MainMenu extends BaseComponent {
 				>
 				</PageHeader>
 			</Affix>
-		</>
+		</div>
 		)
 	}
 }
