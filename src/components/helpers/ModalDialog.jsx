@@ -58,6 +58,8 @@ class ModalDialog extends Component {
 				cancelButtonProps={{
 					disabled: this.props.currentModal && this.props.currentModal.closingDisabled
 				}}
+				className = "ModalDialog"
+				bodyStyle = {{background:'#f3f3f3'}}
 			>
 				{component}
 			</Modal>

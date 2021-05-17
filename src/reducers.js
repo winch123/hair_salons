@@ -72,9 +72,9 @@ function updateMySalons(state = {}, act) {
 	return state
 }
 
-function setUser(state = {}, act) {
+function setLoginSession(state = {}, act) {
 	let newState = Object.assign({}, state)
-	if (act.type === 'SET_USER') {
+	if (act.type === 'SET_LOGIN_SESSION') {
 		newState = act.value
 		return newState;
 	}
@@ -128,7 +128,7 @@ function mainReducer(state = {}, action) {
         salonServices: updateSalonServices(state.salonServices, action),
         persons: updatePersons(state.persons, action),
         workshifts: updateWorkshifts(state.workshifts, action),
-		user: setUser(state.user, action),
+		loginSession: setLoginSession(state.loginSession, action),
 		currentModal: setCurrentModal(state.currentModal, action),
 		mySalons: updateMySalons(state.mySalons, action),
         //todos: todos(state.todos, action),

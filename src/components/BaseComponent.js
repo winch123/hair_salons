@@ -70,6 +70,7 @@ export default class BaseComponent extends Component {
 			//console.log(res)
 			dispatch('UPDATE_SALON_SERVICES', res.services)
 			dispatch('UPDATE_PERSONS', res.persons)
+			dispatch('SET_LOGIN_SESSION', res.current_login)
 		})
 	}
 

@@ -1,8 +1,9 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import {Form, Input, Button, Tooltip} from 'antd'
 import {QuestionCircleOutlined} from '@ant-design/icons'
 import {apiRequest, dispatch} from "../../utils.js"
+import BaseComponent from '../BaseComponent'
 
 const formItemLayout = {
   labelCol: {
@@ -28,7 +29,7 @@ const tailFormItemLayout = {
   },
 }
 
-class ModalSetPassword extends Component {
+class ModalSetPassword extends BaseComponent {
 	state = {
 	}
 
@@ -53,7 +54,7 @@ class ModalSetPassword extends Component {
 		apiRequest('set_password', values)
 		.then(res => {
 			console.log(res)
-			dispatch('SET_USER', res.user)
+			this.updateSalonServices()
 			this.props.closeDialog()
 		})
 	}
@@ -87,7 +88,7 @@ class ModalSetPassword extends Component {
 						whitespace: true,
 					}]}
 				>
-					<Input defaultValue={this.props.user.name} />
+					<Input defaultValue={this.props.selfUser.name} />
 				</Form.Item>}
 
 				<Form.Item
@@ -143,5 +144,9 @@ class ModalSetPassword extends Component {
 }
 
 export default  connect(
-	(storeState) => Object.assign({}, {user: storeState.user,})
+	(storeState) => {
+		return {
+			selfUser: storeState.persons[storeState.loginSession.person_id],
+		}
+	}
 )(ModalSetPassword)
