@@ -4,6 +4,7 @@ import {dispatch} from "../../utils.js"
 import {Modal} from 'antd'
 
 import ModalSetPassword from "../modals/SetPasswordModal"
+import AddServiceDialog from "../AddServiceDialog"
 
 class ModalDialog extends Component {
 	state = {
@@ -39,6 +40,8 @@ class ModalDialog extends Component {
 		switch (this.props.currentModal.content) {
 			case 'ModalSetPassword':
 				return <ModalSetPassword {...CommonProps} />
+			case 'AddServiceDialog':
+				return <AddServiceDialog {...CommonProps} />
 			default:
 				return null
 		}
@@ -51,15 +54,15 @@ class ModalDialog extends Component {
 			<Modal destroyOnClose
 				title={this.state.title}
 				visible={this.props.currentModal}
-				onOk={() => {
-				}}
+				//onOk={() => {}}
 				onCancel={this.onCloseDialog}
-				okButtonProps={{disabled: true}}
-				cancelButtonProps={{
-					disabled: this.props.currentModal && this.props.currentModal.closingDisabled
-				}}
+				//okButtonProps={{disabled: true}}
+				//cancelButtonProps={{
+				//	disabled: this.props.currentModal && this.props.currentModal.closingDisabled
+				//}}
 				className = "ModalDialog"
 				bodyStyle = {{background:'#f3f3f3'}}
+				footer = {<div></div>}
 			>
 				{component}
 			</Modal>

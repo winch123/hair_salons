@@ -3,12 +3,15 @@ import { connect } from 'react-redux'
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListSubheader from '@material-ui/core/ListSubheader';
 
 import TimeIntervalSelect from './TimeIntervalSelect';
 import {apiRequest} from "../utils.js";
+
+import { CrownTwoTone } from '@ant-design/icons';
+import { Select } from 'antd'
+const { Option, OptGroup } = Select
 
 class AddServiceDialog extends Component {
     constructor(props) {
@@ -35,14 +38,19 @@ class AddServiceDialog extends Component {
     }
 
     getDurationOfService = () => {
-       let s = this.props.salonServices[this.state.selectedCategoryId]
-       if (s) {
-	  s = s.services[this.state.selectedServiceId]
-	  if (s) {
-	    return s.duration_default
-	  }
-       }
+		let s = this._seekService(this.state.selectedCategoryId, this.state.selectedServiceId)
+		if (s) {
+			return s.duration_default
+		}
     }
+
+	// Ищет сервис в сторе. (возможно функцию стоит перенести в глобальное место)
+	_seekService(catId, servId) {
+		let s = this.props.salonServices[catId]
+		if (s) {
+			return s.services[servId]
+		}
+	}
 
 	saveServiceInShedule = () => {
 		apiRequest('schedule-add-service', {
@@ -52,49 +60,58 @@ class AddServiceDialog extends Component {
 			endTime: this.state.toTime,
 			comment: this.state.textComment,
 		})
-		this.props.onClose()
+		this.props.closeDialog()
+	}
+
+	onSelectCurrentService = value => {
+		let [catId, servId] = value.split('-')
+		this.setState({
+			selectedServiceId: servId,
+			selectedCategoryId: catId,
+		})
+	}
+
+	filterService = (inputVal, option) => {
+		//if (option.children)
+		//	return option.children.toLowerCase().indexOf(inputVal.toLowerCase()) > -1
+		if (option.value) {
+			//console.log(option.label)
+			let name = this._seekService(...option.value.split('-')).name
+			return name.toLowerCase().indexOf(inputVal.toLowerCase()) > -1
+		}
 	}
 
     render() {
         return (
             <div style={{overflowX:'hidden'}} >
-                <label>
-		    Услуга:
-		    <Select
-		      value={this.state.selectedCategoryId + '-' + this.state.selectedServiceId}
-		      open={this.state.serviceSelectOpen}
-		      onChange={(e) => {
-			  if (e.target.value) {
-			    let [catId, servId] = e.target.value.split('-')
-			    this.setState({selectedServiceId: servId, selectedCategoryId:catId})
-			  }
-		      }}
-		      onClose={(e) => {
-			  console.log( e.target )
-			  this.setState({serviceSelectOpen: !e.target.classList.contains('MuiMenuItem-root')})
-		      }}
-		      onOpen={() => this.setState({serviceSelectOpen: true})}
-		    >
-		      {Object.entries(this.props.salonServices).map(([catId, cat]) => (
-			[<ListSubheader key={catId}> {cat.name}</ListSubheader>,
+				<Select showSearch
+					placeholder = "Выбрать услугу"
+					style = {{ width: 200 }}
+					onChange = {this.onSelectCurrentService}
+					filterOption = {this.filterService}
+					optionLabelProp = "label"
+				>
+					{Object.values(this.props.salonServices).map(cat => (
+						<OptGroup key = {cat.id} label = {cat.name}>
+							{Object.values(cat.services)
+							.filter(serv => (serv.masters || [])[this.props.masterId])
+							.map(serv => (
+								<Option
+									key = {serv.service_id}
+									value = {cat.id + '-' + serv.id}
+									label = {`${serv.name} (${serv.duration_default} мин)`}
+								>
+									<CrownTwoTone style={{marginRight:'5px', fontSize:'18px', color:'#08c'}} />
+									<span style={{color:'lightgreen'}}>
+										{serv.duration_default} мин
+									</span> {serv.name}
+								</Option>
+							))}
+						</OptGroup>
+					))}
+				</Select>
 
-			Object.entries(cat.services)
-				.filter(([servId, serv]) => (serv.masters || [])[this.props.masterId])
-				.map(([servId, serv]) => (
-			    <MenuItem value={catId + '-' + serv.service_id} key={serv.service_id} >
-			      {serv.duration_default} мин - {serv.name}
-			    </MenuItem>
-			  ))
-			]
-		      ))}
-		    </Select>
-                </label>
-
-                <div>
-                    {this.state.fromTime} --- {this.state.toTime}
-                </div>
-
-                <TimeIntervalSelect
+				<TimeIntervalSelect
                     interval = {this.getDurationOfService()}
                     onChangeInterval = {this.handleChangeSelectedInterval}
                     beginTime = {this.props.beginTime}
@@ -110,6 +127,10 @@ class AddServiceDialog extends Component {
                         onChange={this.handleChange}
                     />
                 </div>
+
+				<div>
+					{this.state.fromTime} --- {this.state.toTime}
+				</div>
 
                 <Button autoFocus onClick={this.saveServiceInShedule} color="primary" variant="contained">
                     Save

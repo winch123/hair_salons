@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import AddServiceDialog from './AddServiceDialog'
-import Dialog from '@material-ui/core/Dialog'
+import {dispatch} from "../utils.js"
 
 class DayPersonalSchedule extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            IntervalSelector_open: false,
-            IntervalSelector_beginTime: null,
-            IntervalSelector_endTime: null,
         };
     };
 
@@ -66,16 +62,17 @@ class DayPersonalSchedule extends Component {
         let endT = this.getTimeFromMins( Number(this.props.DaySchedule.BeginShiftMinutes) + Number(intBegin) + Number(intDuration) )
         console.log(beginT, endT, intervalType)
         if (intervalType === 'free') {
-            this.setState({
-                IntervalSelector_open: true,
-                IntervalSelector_beginTime: beginT,
-                IntervalSelector_endTime: endT,
-            })
+			dispatch('SET_CURRENT_MODAL', {
+				content:'AddServiceDialog',
+				contentProps: {
+					//onClose: this.IntervalSelector_handleClose,
+					beginTime: beginT,
+					endTime: endT,
+					currentShiftId: this.props.currentShiftId,
+					masterId: this.props.DaySchedule.master_id,
+				},
+			})
         }
-    }
-
-    IntervalSelector_handleClose = () => {
-        this.setState({IntervalSelector_open: false})
     }
 
     render() {
@@ -117,18 +114,6 @@ class DayPersonalSchedule extends Component {
                     </div>
                 ))}
 
-                <Dialog  maxWidth='xl'
-                    open={this.state.IntervalSelector_open}
-                    onClose={this.IntervalSelector_handleClose}
-                >
-                    <AddServiceDialog
-                        onClose={this.IntervalSelector_handleClose}
-                        beginTime = {this.state.IntervalSelector_beginTime}
-                        endTime = {this.state.IntervalSelector_endTime}
-                        currentShiftId = {this.props.currentShiftId}
-						masterId = {master_id}
-                    />
-                </Dialog>
             </div>
         );
     }
