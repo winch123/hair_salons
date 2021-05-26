@@ -63,6 +63,7 @@ class ModalDialog extends Component {
 				className = "ModalDialog"
 				bodyStyle = {{background:'#f3f3f3'}}
 				footer = {<div></div>}
+				width = "555px"
 			>
 				{component}
 			</Modal>

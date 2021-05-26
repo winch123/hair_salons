@@ -82,6 +82,17 @@
     }
 }
 
+.AddServiceDialog {
+	overflow-x: hidden;
+	.addedType {
+		color: gray;
+	}
+	.addedType.active {
+		color: DarkViolet;
+		font-weight: bold;
+	}
+}
+
 #time-contaner {
     display: flex;
     justify-content:space-around;
