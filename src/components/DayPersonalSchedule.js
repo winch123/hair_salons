@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {dispatch} from "../utils.js"
+import classNames from 'classnames'
 
 class DayPersonalSchedule extends Component {
     constructor(props) {
@@ -87,7 +88,7 @@ class DayPersonalSchedule extends Component {
             <div className="DayPersonalSchedule">
                 <h2>{this.props.persons[master_id].name}  рассписание на </h2>
                 {sch1.map((d, index) => (
-                    <div key={index} className="interval" onClick={this.onIntervalClick.bind(this, d.begin, d.duration, d.s_type)}>
+					<div key={index} className={classNames('interval', d.s_type)} onClick={this.onIntervalClick.bind(this, d.begin, d.duration, d.s_type)}>
                         <div>
                             <span className="timePoint">
                                 {this.getTimeFromMins(BeginShiftMinutes + d.begin)}
@@ -100,9 +101,9 @@ class DayPersonalSchedule extends Component {
                         </div>
                         {Array(d.duration - 1).fill(null).map((d2, ind2) => (
                             <div key={ind2} style={{height:'3px'}}>
-                                { (BeginShiftMinutes + d.begin + ind2 + 1) % 15 === 0 &&
+								{ (BeginShiftMinutes + d.begin + ind2 + 1) % 20 === 0 &&
                                     <span className="timePoint"> {this.getTimeFromMins(BeginShiftMinutes + d.begin + ind2 + 1)} </span>
-                                }
+								}
                                 &nbsp;
                             </div>
                         ))}
@@ -111,7 +112,7 @@ class DayPersonalSchedule extends Component {
                                 {this.getTimeFromMins(BeginShiftMinutes + DurationShiftMinutes)}
                             </span>
                         }
-                    </div>
+					</div>
                 ))}
 
             </div>

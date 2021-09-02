@@ -75,6 +75,16 @@
     .interval {
         border: solid 1px;
         margin: 1px 77px;
+		&.own {
+			background: LightSkyBlue;
+		}
+		&.pause {
+			background: Orchid;
+		}
+		&.free {
+			background: Khaki;
+			cursor: pointer;
+		}
     }
     .timePoint {
         margin-left: -55px;
